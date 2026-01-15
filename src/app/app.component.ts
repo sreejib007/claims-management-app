@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   isLoading = true;
   isChatbotOpen = false;
   activeMenu = 'dashboard';
+  isSidebarOpen = false;
 
   // Global Search Detail Drawers
   isClaimDetailOpen = false;
@@ -69,6 +70,15 @@ export class AppComponent implements OnInit {
     } else {
       this.activeMenu = menuId;
     }
+    this.isSidebarOpen = false;
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen = false;
   }
 
   // Global Search Handlers

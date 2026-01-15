@@ -90,7 +90,7 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       {
         title: 'Open Claims',
         value: activeClaims,
-        icon: 'pi pi-file-edit',
+        icon: 'pi pi-copy',
         iconBg: 'warning',
         trend: `${newClaims} new`,
         trendUp: false
@@ -98,7 +98,7 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       {
         title: 'Total Exposure',
         value: `£${totalImpact.toLocaleString()}`,
-        icon: 'pi pi-pound',
+        icon: 'pi pi-credit-card',
         iconBg: 'danger',
         trend: `Avg £${avgImpact.toLocaleString()}`,
         trendUp: false
@@ -106,7 +106,7 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       {
         title: 'Pending Documents',
         value: pendingDocs,
-        icon: 'pi pi-inbox',
+        icon: 'pi pi-clock',
         iconBg: 'info',
         trend: 'Awaiting',
         trendUp: false

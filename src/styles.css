@@ -23,3 +23,100 @@ app-handlers .handler-list-card {
   display: flex;
   flex-direction: column;
 }
+
+/* ==================== GLOBAL MOBILE RESPONSIVE ==================== */
+
+/* Touch-friendly tap targets */
+@media (max-width: 991.98px) {
+  button,
+  .btn,
+  a.nav-link,
+  .clickable {
+    min-height: 44px;
+  }
+}
+
+/* Responsive tables */
+@media (max-width: 767.98px) {
+  .table-responsive-stack thead {
+    display: none;
+  }
+
+  .table-responsive-stack tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem;
+  }
+
+  .table-responsive-stack td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border: none;
+  }
+
+  .table-responsive-stack td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #64748b;
+  }
+}
+
+/* Responsive cards */
+@media (max-width: 767.98px) {
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+/* Responsive modals/drawers */
+@media (max-width: 767.98px) {
+  .p-sidebar {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Hide scrollbar on mobile but keep functionality */
+@media (max-width: 767.98px) {
+  .main-content::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+}
+
+/* Responsive typography */
+@media (max-width: 575.98px) {
+  html {
+    font-size: 14px;
+  }
+
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+  h4 { font-size: 1rem; }
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .row {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+  }
+
+  .row > * {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}

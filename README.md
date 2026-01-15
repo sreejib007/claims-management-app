@@ -12,7 +12,7 @@ A modern Angular-based claims management system with dashboard, policies, handle
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/sreejib007/claims-management-app.git
 cd claims-management-app
 
 # Install dependencies

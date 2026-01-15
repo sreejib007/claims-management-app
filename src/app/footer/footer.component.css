@@ -92,3 +92,59 @@
   font-size: 0.75rem;
   font-weight: 500;
 }
+
+/* ==================== MOBILE RESPONSIVE ==================== */
+
+@media (max-width: 767.98px) {
+  .footer {
+    text-align: center;
+  }
+
+  .footer .row > div {
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-logo {
+    margin: 0 auto;
+  }
+
+  .social-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+  }
+
+  .footer-links li {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .brand-name {
+    font-size: 1.125rem;
+  }
+
+  .tagline {
+    font-size: 0.8125rem;
+  }
+
+  .footer-heading {
+    font-size: 0.8125rem;
+  }
+
+  .copyright-bar {
+    font-size: 0.75rem;
+    padding: 0.75rem 0;
+  }
+
+  .copyright-bar .d-flex {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

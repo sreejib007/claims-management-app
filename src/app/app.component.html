@@ -9,8 +9,16 @@
     (handlerSelect)="onGlobalHandlerSelect($event)">
   </app-header>
   <div class="d-flex flex-grow-1">
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" (click)="toggleSidebar()">
+      <i class="pi" [ngClass]="isSidebarOpen ? 'pi-times' : 'pi-bars'"></i>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay" [class.show]="isSidebarOpen" (click)="closeSidebar()"></div>
+
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+    <aside class="sidebar" [class.open]="isSidebarOpen">
       <nav class="sidebar-nav">
         <ul class="nav-list">
           <li *ngFor="let item of menuItems"

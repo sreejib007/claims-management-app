@@ -77,3 +77,93 @@
 .chatbot-trigger .pi {
   font-size: 1.1rem;
 }
+
+/* ==================== MOBILE RESPONSIVE ==================== */
+
+@media (max-width: 991.98px) {
+  .fnol-header {
+    padding: 0.5rem 0;
+  }
+
+  .brand-name {
+    font-size: 1rem;
+  }
+
+  .tagline {
+    font-size: 0.6875rem;
+  }
+
+  .logo-box {
+    width: 38px;
+    height: 38px;
+  }
+
+  .logo-box i {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .fnol-header .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .brand-name {
+    font-size: 0.9375rem;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .logo-box {
+    width: 36px;
+    height: 36px;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.75rem;
+  }
+
+  .chatbot-trigger {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .fnol-header .container-fluid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .logo-box {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-box i {
+    font-size: 1rem;
+  }
+
+  .brand-name {
+    font-size: 0.8125rem;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .chatbot-trigger {
+    width: 32px;
+    height: 32px;
+  }
+
+  .chatbot-trigger .pi {
+    font-size: 0.9rem;
+  }
+}
