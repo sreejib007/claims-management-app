@@ -1,0 +1,477 @@
+.claims-list-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.card-header-section {
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.card-header-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.header-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.search-input {
+  min-width: 200px;
+}
+
+.filter-dropdown {
+  min-width: 140px;
+}
+
+.filter-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.7rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-container {
+  padding: 1rem;
+  flex: 1;
+  overflow: auto;
+}
+
+.cards-container {
+  padding: 1.5rem;
+  flex: 1;
+  overflow: auto;
+}
+
+.cards-container .row {
+  align-items: stretch;
+}
+
+.cards-container .row > div {
+  display: flex;
+}
+
+.policy-cell {
+  line-height: 1.4;
+}
+
+.date-cell {
+  line-height: 1.4;
+}
+
+.loss-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.loss-type-badge.accident {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #991b1b;
+}
+
+.loss-type-badge.theft {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  color: #6d28d9;
+}
+
+.loss-type-badge.water-damage {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1d4ed8;
+}
+
+.loss-type-badge.fire {
+  background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+  color: #c2410c;
+}
+
+.loss-type-badge.storm {
+  background: linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%);
+  color: #0e7490;
+}
+
+.handler-avatar-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5e81ac 0%, #81a1c1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.handler-avatar-sm.unassigned {
+  background: #cbd5e1;
+  color: #64748b;
+}
+
+.risk-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.risk-flag-badge {
+  display: inline-block;
+  padding: 0.2rem 0.4rem;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.claim-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.claim-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.claim-card.new {
+  border-left: 4px solid #3b82f6;
+}
+
+.claim-card.in-review {
+  border-left: 4px solid #f59e0b;
+}
+
+.claim-card.referred {
+  border-left: 4px solid #ef4444;
+}
+
+.claim-card.resolved {
+  border-left: 4px solid #22c55e;
+}
+
+.claim-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.claim-type-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.claim-type-icon.accident {
+  background: linear-gradient(135deg, #fecaca 0%, #f87171 100%);
+  color: #7f1d1d;
+}
+
+.claim-type-icon.theft {
+  background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+  color: #5b21b6;
+}
+
+.claim-type-icon.water-damage {
+  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+  color: #1e40af;
+}
+
+.claim-type-icon.fire {
+  background: linear-gradient(135deg, #fdba74 0%, #fb923c 100%);
+  color: #9a3412;
+}
+
+.claim-type-icon.storm {
+  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+  color: #155e75;
+}
+
+.claim-number {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.claim-type {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.claim-card-policy {
+  margin-bottom: 0.75rem;
+}
+
+.policy-info {
+  font-size: 0.9rem;
+  color: #334155;
+  margin-bottom: 0.25rem;
+}
+
+.claim-card-incident {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.incident-description {
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.claim-card-details {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px dashed #e2e8f0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.detail-item .label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.detail-item .value {
+  font-size: 0.875rem;
+  color: #1e293b;
+}
+
+.claim-card-handler {
+  margin-bottom: 0.75rem;
+}
+
+.handler-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5e81ac 0%, #81a1c1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.handler-avatar.unassigned {
+  background: #cbd5e1;
+  color: #64748b;
+}
+
+.handler-name {
+  font-weight: 500;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.claim-card-flags {
+  background: #fffbeb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.flags-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #92400e;
+  margin-bottom: 0.35rem;
+}
+
+.flags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.claim-card-recommendation {
+  margin-bottom: 0.75rem;
+}
+
+.claim-card-indicators {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem;
+  background: #f1f5f9;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.indicator i {
+  font-size: 0.85rem;
+}
+
+.indicator.docs {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.indicator.notes {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.indicator .count {
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #94a3b8;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.75rem;
+  border-color: #e2e8f0;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem;
+  border-color: #f1f5f9;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background: #f8fafc;
+}
+
+:host ::ng-deep .p-selectbutton .p-button {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+:host ::ng-deep .p-selectbutton .p-button.p-highlight {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+:host ::ng-deep .p-paginator {
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+:host ::ng-deep .p-dropdown {
+  min-width: 130px;
+}
+
+/* Clickable Row & Card Styles */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: #f8fafc !important;
+}
+
+.clickable-card {
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.clickable-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #6366f1;
+}
+
+@media (max-width: 768px) {
+  .card-header-section {
+    padding: 1rem;
+  }
+
+  .search-input {
+    min-width: 100%;
+  }
+
+  .claim-card-details {
+    gap: 0.75rem;
+  }
+}

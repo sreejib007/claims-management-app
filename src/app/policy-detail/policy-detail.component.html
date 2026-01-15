@@ -1,0 +1,282 @@
+<app-detail-drawer
+  [(isOpen)]="isOpen"
+  [title]="policy?.policyNumber || 'Policy Details'"
+  [subtitle]="policy?.product || ''"
+  icon="pi pi-folder"
+  (isOpenChange)="close()">
+
+  <div class="detail-content" *ngIf="policy">
+    <!-- Status Banner -->
+    <div class="status-banner" [ngClass]="policy.status.toLowerCase()">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <p-tag [value]="policy.status" [severity]="getStatusSeverity(policy.status)" />
+          <app-type-badge [type]="policy.product" category="product"></app-type-badge>
+        </div>
+        <div class="days-remaining" [class.expiring-soon]="getDaysRemaining() < 30">
+          <i class="pi pi-clock me-1"></i>
+          {{ getDaysRemaining() }} days remaining
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0"><i class="pi pi-info-circle me-2"></i>Policy Details</p-tab>
+        <p-tab value="1"><i class="pi pi-user me-2"></i>Customer</p-tab>
+        <p-tab value="2"><i class="pi pi-car me-2"></i>Asset</p-tab>
+        <p-tab value="3"><i class="pi pi-shield me-2"></i>Coverage</p-tab>
+        <p-tab value="4"><i class="pi pi-file-edit me-2"></i>Claims ({{ relatedClaims.length }})</p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+        <!-- Policy Details Tab -->
+        <p-tabpanel value="0">
+          <div class="tab-content">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-folder me-2"></i>Policy Information</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Policy Number</span>
+                  <span class="info-value fw-semibold">{{ policy.policyNumber }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Product Type</span>
+                  <app-type-badge [type]="policy.product" category="product"></app-type-badge>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Status</span>
+                  <app-status-badge [status]="policy.status" type="policy"></app-status-badge>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Risk Tier</span>
+                  <span class="info-value">{{ policy.riskTier }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-calendar me-2"></i>Policy Period</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Start Date</span>
+                  <span class="info-value">{{ formatDate(policy.startDate) }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">End Date</span>
+                  <span class="info-value">{{ formatDate(policy.endDate) }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Days Remaining</span>
+                  <span class="info-value" [class.text-danger]="getDaysRemaining() < 30">
+                    {{ getDaysRemaining() }} days
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-pound me-2"></i>Financial Details</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Annual Premium</span>
+                  <span class="info-value fw-bold text-primary">{{ formatCurrency(policy.premiumAnnualGBP) }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Excess</span>
+                  <span class="info-value">{{ formatCurrency(policy.excessGBP) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section" *ngIf="policy.policyNotes?.length">
+              <h6 class="section-title"><i class="pi pi-info-circle me-2"></i>Policy Notes</h6>
+              <ul class="policy-notes">
+                <li *ngFor="let note of policy.policyNotes">{{ note }}</li>
+              </ul>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Customer Tab -->
+        <p-tabpanel value="1">
+          <div class="tab-content">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-user me-2"></i>Customer Information</h6>
+              <div class="customer-header">
+                <app-avatar [name]="policy.customer.name" size="xl" color="secondary"></app-avatar>
+                <div class="customer-name-section">
+                  <h5 class="mb-1">{{ policy.customer.name }}</h5>
+                  <span class="customer-id">ID: {{ policy.customer.customerId }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-phone me-2"></i>Contact Details</h6>
+              <div class="contact-list">
+                <div class="contact-item">
+                  <app-icon-box icon="pi pi-envelope" size="sm" color="subtle-primary"></app-icon-box>
+                  <div>
+                    <span class="contact-label">Email</span>
+                    <a class="contact-value" [href]="'mailto:' + policy.customer.email">{{ policy.customer.email }}</a>
+                  </div>
+                </div>
+                <div class="contact-item">
+                  <app-icon-box icon="pi pi-phone" size="sm" color="subtle-success"></app-icon-box>
+                  <div>
+                    <span class="contact-label">Phone</span>
+                    <a class="contact-value" [href]="'tel:' + policy.customer.phone">{{ policy.customer.phone }}</a>
+                  </div>
+                </div>
+                <div class="contact-item">
+                  <app-icon-box icon="pi pi-map-marker" size="sm" color="subtle-warning"></app-icon-box>
+                  <div>
+                    <span class="contact-label">Address</span>
+                    <span class="contact-value">{{ policy.customer.address }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Asset Tab -->
+        <p-tabpanel value="2">
+          <div class="tab-content">
+            <!-- Motor Asset -->
+            <div class="detail-section" *ngIf="isMotorPolicy() && getVehicleAsset()">
+              <h6 class="section-title"><i class="pi pi-car me-2"></i>Vehicle Details</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Registration</span>
+                  <span class="info-value fw-semibold vehicle-reg">{{ getVehicleAsset()?.vehicleReg }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Make</span>
+                  <span class="info-value">{{ getVehicleAsset()?.make }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Model</span>
+                  <span class="info-value">{{ getVehicleAsset()?.model }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Year</span>
+                  <span class="info-value">{{ getVehicleAsset()?.year }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Home Asset -->
+            <div class="detail-section" *ngIf="!isMotorPolicy() && getPropertyAsset()">
+              <h6 class="section-title"><i class="pi pi-home me-2"></i>Property Details</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Property Type</span>
+                  <span class="info-value">{{ getPropertyAsset()?.propertyType }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Year Built</span>
+                  <span class="info-value">{{ getPropertyAsset()?.yearBuilt }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Bedrooms</span>
+                  <span class="info-value">{{ getPropertyAsset()?.bedrooms }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Coverage Tab -->
+        <p-tabpanel value="3">
+          <div class="tab-content">
+            <!-- Motor Coverage -->
+            <div class="detail-section" *ngIf="isMotorPolicy() && getMotorCoverage()">
+              <h6 class="section-title"><i class="pi pi-shield me-2"></i>Motor Coverage</h6>
+              <div class="coverage-grid">
+                <div class="coverage-item">
+                  <span class="coverage-label">Coverage Type</span>
+                  <span class="coverage-value">{{ getMotorCoverage()?.type }}</span>
+                </div>
+                <div class="coverage-item" [class.active]="getMotorCoverage()?.windscreen">
+                  <i class="pi" [ngClass]="getMotorCoverage()?.windscreen ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                  <span>Windscreen Cover</span>
+                </div>
+                <div class="coverage-item" [class.active]="getMotorCoverage()?.courtesyCar">
+                  <i class="pi" [ngClass]="getMotorCoverage()?.courtesyCar ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                  <span>Courtesy Car</span>
+                </div>
+                <div class="coverage-item" [class.active]="getMotorCoverage()?.personalInjury">
+                  <i class="pi" [ngClass]="getMotorCoverage()?.personalInjury ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                  <span>Personal Injury</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Home Coverage -->
+            <div class="detail-section" *ngIf="!isMotorPolicy() && getHomeCoverage()">
+              <h6 class="section-title"><i class="pi pi-shield me-2"></i>Home Coverage</h6>
+              <div class="coverage-grid">
+                <div class="coverage-item" [class.active]="getHomeCoverage()?.buildings">
+                  <i class="pi" [ngClass]="getHomeCoverage()?.buildings ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                  <span>Buildings Cover</span>
+                </div>
+                <div class="coverage-item" [class.active]="getHomeCoverage()?.contents">
+                  <i class="pi" [ngClass]="getHomeCoverage()?.contents ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                  <span>Contents Cover</span>
+                </div>
+                <div class="coverage-item" [class.active]="getHomeCoverage()?.accidentalDamage">
+                  <i class="pi" [ngClass]="getHomeCoverage()?.accidentalDamage ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                  <span>Accidental Damage</span>
+                </div>
+                <div class="coverage-item" [class.active]="getHomeCoverage()?.homeEmergency">
+                  <i class="pi" [ngClass]="getHomeCoverage()?.homeEmergency ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                  <span>Home Emergency</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Claims Tab -->
+        <p-tabpanel value="4">
+          <div class="tab-content">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-file-edit me-2"></i>Related Claims</h6>
+              <div class="claims-list" *ngIf="relatedClaims.length > 0; else noClaims">
+                <div class="claim-item clickable-item" *ngFor="let claim of relatedClaims" (click)="onClaimClick(claim, $event)">
+                  <div class="claim-item-header">
+                    <span class="claim-number">{{ claim.claimNumber }}</span>
+                    <p-tag [value]="claim.status" [severity]="getClaimStatusSeverity(claim.status)" />
+                  </div>
+                  <div class="claim-item-body">
+                    <div class="claim-detail">
+                      <i class="pi pi-tag"></i>
+                      <span>{{ claim.lossType }}</span>
+                    </div>
+                    <div class="claim-detail">
+                      <i class="pi pi-calendar"></i>
+                      <span>{{ formatDate(claim.lossDateTime) }}</span>
+                    </div>
+                    <div class="claim-detail">
+                      <i class="pi pi-pound"></i>
+                      <span>{{ formatCurrency(claim.estimatedImpactGBP) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ng-template #noClaims>
+                <div class="empty-state">
+                  <i class="pi pi-check-circle"></i>
+                  <p>No claims on this policy</p>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</app-detail-drawer>

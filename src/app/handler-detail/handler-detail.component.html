@@ -1,0 +1,153 @@
+<app-detail-drawer
+  [(isOpen)]="isOpen"
+  [title]="handler?.name || 'Handler Details'"
+  [subtitle]="handler?.team + ' Team'"
+  icon="pi pi-user"
+  (isOpenChange)="close()">
+
+  <div class="detail-content" *ngIf="handler">
+    <!-- Handler Profile Banner -->
+    <div class="profile-banner">
+      <app-avatar [name]="handler.name" size="xl" [color]="getTeamColor()"></app-avatar>
+      <div class="profile-info">
+        <h4 class="handler-name">{{ handler.name }}</h4>
+        <app-type-badge [type]="handler.team" category="team"></app-type-badge>
+      </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="stats-summary">
+      <div class="stat-card">
+        <div class="stat-value">{{ assignedClaims.length }}</div>
+        <div class="stat-label">Assigned Claims</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ formatCurrency(getTotalExposure()) }}</div>
+        <div class="stat-label">Total Exposure</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ getClaimsByStatus('New') }}</div>
+        <div class="stat-label">New Claims</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ getClaimsByStatus('In Review') }}</div>
+        <div class="stat-label">In Review</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0"><i class="pi pi-info-circle me-2"></i>Profile</p-tab>
+        <p-tab value="1"><i class="pi pi-file-edit me-2"></i>Assigned Claims ({{ assignedClaims.length }})</p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+        <!-- Profile Tab -->
+        <p-tabpanel value="0">
+          <div class="tab-content">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-user me-2"></i>Handler Information</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Handler ID</span>
+                  <span class="info-value fw-semibold">{{ handler.id }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Name</span>
+                  <span class="info-value">{{ handler.name }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Team</span>
+                  <app-type-badge [type]="handler.team" category="team"></app-type-badge>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-chart-bar me-2"></i>Workload Summary</h6>
+              <div class="workload-breakdown">
+                <div class="workload-item">
+                  <div class="workload-header">
+                    <span class="workload-label">New</span>
+                    <span class="workload-count">{{ getClaimsByStatus('New') }}</span>
+                  </div>
+                  <div class="workload-bar new" [style.width.%]="assignedClaims.length ? (getClaimsByStatus('New') / assignedClaims.length * 100) : 0"></div>
+                </div>
+                <div class="workload-item">
+                  <div class="workload-header">
+                    <span class="workload-label">In Review</span>
+                    <span class="workload-count">{{ getClaimsByStatus('In Review') }}</span>
+                  </div>
+                  <div class="workload-bar in-review" [style.width.%]="assignedClaims.length ? (getClaimsByStatus('In Review') / assignedClaims.length * 100) : 0"></div>
+                </div>
+                <div class="workload-item">
+                  <div class="workload-header">
+                    <span class="workload-label">Referred</span>
+                    <span class="workload-count">{{ getClaimsByStatus('Referred') }}</span>
+                  </div>
+                  <div class="workload-bar referred" [style.width.%]="assignedClaims.length ? (getClaimsByStatus('Referred') / assignedClaims.length * 100) : 0"></div>
+                </div>
+                <div class="workload-item">
+                  <div class="workload-header">
+                    <span class="workload-label">Resolved</span>
+                    <span class="workload-count">{{ getClaimsByStatus('Resolved') }}</span>
+                  </div>
+                  <div class="workload-bar resolved" [style.width.%]="assignedClaims.length ? (getClaimsByStatus('Resolved') / assignedClaims.length * 100) : 0"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Assigned Claims Tab -->
+        <p-tabpanel value="1">
+          <div class="tab-content">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-file-edit me-2"></i>Assigned Claims</h6>
+              <div class="claims-list" *ngIf="assignedClaims.length > 0; else noClaims">
+                <div class="claim-item clickable-item" *ngFor="let claim of assignedClaims" (click)="onClaimClick(claim, $event)">
+                  <div class="claim-item-header">
+                    <span class="claim-number">{{ claim.claimNumber }}</span>
+                    <p-tag [value]="claim.status" [severity]="getClaimStatusSeverity(claim.status)" />
+                  </div>
+                  <div class="claim-item-body">
+                    <div class="claim-detail">
+                      <i class="pi pi-tag"></i>
+                      <span>{{ claim.lossType }}</span>
+                    </div>
+                    <div class="claim-detail">
+                      <i class="pi pi-folder"></i>
+                      <span>{{ getPolicyNumber(claim.policyId) }}</span>
+                    </div>
+                    <div class="claim-detail">
+                      <i class="pi pi-user"></i>
+                      <span>{{ getCustomerName(claim.policyId) }}</span>
+                    </div>
+                    <div class="claim-detail">
+                      <i class="pi pi-pound"></i>
+                      <span>{{ formatCurrency(claim.estimatedImpactGBP) }}</span>
+                    </div>
+                  </div>
+                  <div class="claim-item-footer">
+                    <span class="claim-date">
+                      <i class="pi pi-calendar me-1"></i>
+                      {{ formatDate(claim.lossDateTime) }}
+                    </span>
+                    <span class="claim-recommendation">{{ claim.recommendation }}</span>
+                  </div>
+                </div>
+              </div>
+              <ng-template #noClaims>
+                <div class="empty-state">
+                  <i class="pi pi-inbox"></i>
+                  <p>No claims assigned to this handler</p>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</app-detail-drawer>

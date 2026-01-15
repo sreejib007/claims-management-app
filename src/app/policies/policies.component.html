@@ -1,0 +1,252 @@
+<div class="container-fluid">
+  <!-- Main Card Container -->
+  <div class="policy-list-card">
+    <!-- Card Header -->
+    <div class="card-header-section">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <div class="header-icon">
+            <i class="pi pi-folder"></i>
+          </div>
+          <div>
+            <h2 class="mb-0">Policies</h2>
+            <small class="text-muted">{{ filteredPolicies.length }} of {{ policies.length }} policies</small>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <!-- Search -->
+          <p-iconfield>
+            <p-inputicon styleClass="pi pi-search" />
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="searchTerm"
+              (input)="onSearch()"
+              placeholder="Search policies..."
+              class="search-input" />
+          </p-iconfield>
+
+          <!-- View Toggle -->
+          <p-selectbutton
+            [options]="viewOptions"
+            [(ngModel)]="viewMode"
+            optionLabel="label"
+            optionValue="value">
+            <ng-template pTemplate="item" let-item>
+              <i [class]="item.icon" class="me-2"></i>
+              <span>{{ item.label }}</span>
+            </ng-template>
+          </p-selectbutton>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table View -->
+    <div *ngIf="viewMode === 'table'" class="table-container">
+      <p-table
+        [value]="filteredPolicies"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 25]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} policies"
+        [tableStyle]="{ 'min-width': '100%' }"
+        styleClass="p-datatable-sm p-datatable-striped">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="policyNumber">Policy # <p-sortIcon field="policyNumber" /></th>
+            <th pSortableColumn="product">Type <p-sortIcon field="product" /></th>
+            <th pSortableColumn="customer.name">Customer <p-sortIcon field="customer.name" /></th>
+            <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
+            <th pSortableColumn="riskTier">Risk Tier <p-sortIcon field="riskTier" /></th>
+            <th>Asset</th>
+            <th pSortableColumn="premiumAnnualGBP">Premium <p-sortIcon field="premiumAnnualGBP" /></th>
+            <th pSortableColumn="excessGBP">Excess <p-sortIcon field="excessGBP" /></th>
+            <th pSortableColumn="startDate">Start Date <p-sortIcon field="startDate" /></th>
+            <th pSortableColumn="endDate">End Date <p-sortIcon field="endDate" /></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-policy>
+          <tr class="clickable-row" (click)="openPolicyDetail(policy)">
+            <td>
+              <span class="fw-semibold text-primary">{{ policy.policyNumber }}</span>
+            </td>
+            <td>
+              <span class="product-badge" [ngClass]="policy.product.toLowerCase()">
+                <i [class]="getProductIcon(policy.product)" class="me-1"></i>
+                {{ policy.product }}
+              </span>
+            </td>
+            <td>
+              <div class="customer-cell">
+                <div class="fw-medium">{{ policy.customer.name }}</div>
+                <small class="text-muted">{{ policy.customer.email }}</small>
+              </div>
+            </td>
+            <td>
+              <p-tag [value]="policy.status" [severity]="getStatusSeverity(policy.status)" />
+            </td>
+            <td>
+              <span class="risk-badge" [ngClass]="policy.riskTier.toLowerCase()">
+                {{ policy.riskTier }}
+              </span>
+            </td>
+            <td>
+              <div *ngIf="isMotorPolicy(policy)" class="asset-info">
+                <i class="pi pi-car text-muted me-1"></i>
+                {{ getVehicleAsset(policy).make }} {{ getVehicleAsset(policy).model }}
+                <small class="text-muted d-block">{{ getVehicleAsset(policy).vehicleReg }}</small>
+              </div>
+              <div *ngIf="!isMotorPolicy(policy)" class="asset-info">
+                <i class="pi pi-home text-muted me-1"></i>
+                {{ getPropertyAsset(policy).propertyType }}
+                <small class="text-muted d-block">{{ getPropertyAsset(policy).bedrooms }} beds, Built {{ getPropertyAsset(policy).yearBuilt }}</small>
+              </div>
+            </td>
+            <td class="fw-semibold">{{ formatCurrency(policy.premiumAnnualGBP) }}</td>
+            <td>{{ formatCurrency(policy.excessGBP) }}</td>
+            <td>{{ policy.startDate | date:'dd MMM yyyy' }}</td>
+            <td>
+              <span [ngClass]="{'text-danger': getDaysRemaining(policy.endDate) < 30}">
+                {{ policy.endDate | date:'dd MMM yyyy' }}
+              </span>
+              <small *ngIf="getDaysRemaining(policy.endDate) > 0 && getDaysRemaining(policy.endDate) < 60"
+                     class="d-block text-warning">
+                {{ getDaysRemaining(policy.endDate) }} days left
+              </small>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" class="text-center py-4">
+              <i class="pi pi-inbox text-muted" style="font-size: 2rem;"></i>
+              <p class="text-muted mt-2 mb-0">No policies found</p>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Card View -->
+    <div *ngIf="viewMode === 'cards'" class="cards-container">
+      <div class="row g-3">
+        <div *ngFor="let policy of filteredPolicies" class="col-12 col-md-6 col-xl-4">
+          <div class="policy-card" [ngClass]="policy.product.toLowerCase()">
+            <!-- Card Header -->
+            <div class="policy-card-header">
+              <div class="d-flex align-items-center gap-2">
+                <div class="policy-type-icon" [ngClass]="policy.product.toLowerCase()">
+                  <i [class]="getProductIcon(policy.product)"></i>
+                </div>
+                <div>
+                  <div class="policy-number">{{ policy.policyNumber }}</div>
+                  <div class="policy-product">{{ policy.product }} Insurance</div>
+                </div>
+              </div>
+              <p-tag [value]="policy.status" [severity]="getStatusSeverity(policy.status)" />
+            </div>
+
+            <!-- Customer Info -->
+            <div class="policy-card-customer">
+              <div class="customer-name">
+                <i class="pi pi-user me-2"></i>
+                {{ policy.customer.name }}
+              </div>
+              <div class="customer-contact">
+                <small class="text-muted">
+                  <i class="pi pi-envelope me-1"></i>{{ policy.customer.email }}
+                </small>
+              </div>
+            </div>
+
+            <!-- Asset Info -->
+            <div class="policy-card-asset">
+              <div *ngIf="isMotorPolicy(policy)" class="asset-detail">
+                <div class="asset-title">
+                  <i class="pi pi-car me-1"></i>
+                  {{ getVehicleAsset(policy).make }} {{ getVehicleAsset(policy).model }} ({{ getVehicleAsset(policy).year }})
+                </div>
+                <div class="asset-subtitle">Reg: {{ getVehicleAsset(policy).vehicleReg }}</div>
+              </div>
+              <div *ngIf="!isMotorPolicy(policy)" class="asset-detail">
+                <div class="asset-title">
+                  <i class="pi pi-home me-1"></i>
+                  {{ getPropertyAsset(policy).propertyType }}
+                </div>
+                <div class="asset-subtitle">{{ getPropertyAsset(policy).bedrooms }} bedrooms, Built {{ getPropertyAsset(policy).yearBuilt }}</div>
+              </div>
+            </div>
+
+            <!-- Financial Details -->
+            <div class="policy-card-financials">
+              <div class="financial-item">
+                <span class="label">Premium</span>
+                <span class="value">{{ formatCurrency(policy.premiumAnnualGBP) }}/yr</span>
+              </div>
+              <div class="financial-item">
+                <span class="label">Excess</span>
+                <span class="value">{{ formatCurrency(policy.excessGBP) }}</span>
+              </div>
+              <div class="financial-item">
+                <span class="label">Risk Tier</span>
+                <span class="risk-badge" [ngClass]="policy.riskTier.toLowerCase()">{{ policy.riskTier }}</span>
+              </div>
+            </div>
+
+            <!-- Dates -->
+            <div class="policy-card-dates">
+              <div class="date-item">
+                <i class="pi pi-calendar-plus me-1"></i>
+                <span>Start: {{ policy.startDate | date:'dd MMM yyyy' }}</span>
+              </div>
+              <div class="date-item" [ngClass]="{'expiring-soon': getDaysRemaining(policy.endDate) < 30 && getDaysRemaining(policy.endDate) > 0}">
+                <i class="pi pi-calendar-times me-1"></i>
+                <span>End: {{ policy.endDate | date:'dd MMM yyyy' }}</span>
+                <span *ngIf="getDaysRemaining(policy.endDate) > 0 && getDaysRemaining(policy.endDate) < 60"
+                      class="days-badge">
+                  {{ getDaysRemaining(policy.endDate) }}d left
+                </span>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div *ngIf="policy.policyNotes && policy.policyNotes.length > 0" class="policy-card-notes">
+              <div class="notes-label">
+                <i class="pi pi-info-circle me-1"></i>Notes
+              </div>
+              <ul class="notes-list">
+                <li *ngFor="let note of policy.policyNotes">{{ note }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredPolicies.length === 0" class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <p>No policies found</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Policy Detail Drawer -->
+<app-policy-detail
+  [(isOpen)]="isDetailDrawerOpen"
+  [policyId]="selectedPolicyId"
+  (isOpenChange)="closePolicyDetail()"
+  (claimClick)="onClaimClickFromPolicy($event)">
+</app-policy-detail>
+
+<!-- Claim Detail Drawer -->
+<app-claim-detail
+  [(isOpen)]="isClaimDetailOpen"
+  [claimId]="selectedClaimId"
+  (isOpenChange)="closeClaimDetail()">
+</app-claim-detail>

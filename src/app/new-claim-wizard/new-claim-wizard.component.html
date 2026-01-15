@@ -1,0 +1,301 @@
+<!-- Overlay -->
+<div class="drawer-overlay" [class.active]="isOpen" (click)="closePanel()"></div>
+
+<!-- Drawer Panel -->
+<div class="drawer-panel" [class.open]="isOpen">
+  <!-- Header -->
+  <div class="drawer-header">
+    <div class="d-flex align-items-center gap-2">
+      <i class="pi pi-file-edit"></i>
+      <h5 class="mb-0 fw-semibold">New Claim</h5>
+    </div>
+    <button type="button" class="btn-close-drawer" (click)="closePanel()">
+      <i class="pi pi-times"></i>
+    </button>
+  </div>
+
+  <!-- Steps Indicator -->
+  <div class="steps-container">
+    <p-steps [model]="steps" [activeIndex]="currentStep" [readonly]="true"></p-steps>
+  </div>
+
+  <!-- Content -->
+  <div class="drawer-content">
+    <!-- Step 1: Policy Selection -->
+    <div *ngIf="currentStep === 0" class="step-content">
+      <div class="step-header">
+        <h6 class="fw-semibold mb-1">Select Policy</h6>
+        <p class="text-muted small mb-0">Search and select the policy for this claim</p>
+      </div>
+
+      <!-- Search Box -->
+      <div class="search-box mb-3">
+        <span class="p-input-icon-left w-100">
+          <i class="pi pi-search"></i>
+          <input
+            type="text"
+            pInputText
+            class="w-100"
+            placeholder="Search by policy number, customer, or product..."
+            [value]="policySearchTerm"
+            (input)="onPolicySearch($event)"
+          />
+        </span>
+      </div>
+
+      <!-- Policy List -->
+      <div class="policy-list">
+        <div
+          *ngFor="let policy of filteredPolicies"
+          class="policy-card"
+          [class.selected]="selectedPolicy?.id === policy.id"
+          (click)="selectPolicy(policy)"
+        >
+          <div class="policy-card-header">
+            <div class="policy-icon" [ngClass]="policy.product.toLowerCase()">
+              <i [class]="getPolicyTypeIcon(policy.product)"></i>
+            </div>
+            <div class="policy-info flex-grow-1">
+              <div class="policy-number fw-semibold">{{ policy.policyNumber }}</div>
+              <div class="policy-customer text-muted small">{{ policy.customer.name }}</div>
+            </div>
+            <p-tag
+              [value]="policy.status"
+              [severity]="policy.status === 'Active' ? 'success' : 'danger'"
+            ></p-tag>
+          </div>
+          <div class="policy-details">
+            <div class="detail-item">
+              <i class="pi pi-tag"></i>
+              <span>{{ policy.product }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="pi pi-calendar"></i>
+              <span>Expires: {{ policy.endDate }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="pi pi-pound"></i>
+              <span>Excess: £{{ policy.excessGBP }}</span>
+            </div>
+          </div>
+          <div class="policy-selected-indicator" *ngIf="selectedPolicy?.id === policy.id">
+            <i class="pi pi-check-circle"></i>
+          </div>
+        </div>
+
+        <div *ngIf="filteredPolicies.length === 0" class="no-results">
+          <i class="pi pi-search text-muted"></i>
+          <p class="text-muted mb-0">No policies found matching your search</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Loss Details -->
+    <div *ngIf="currentStep === 1" class="step-content">
+      <div class="step-header">
+        <h6 class="fw-semibold mb-1">Loss Details</h6>
+        <p class="text-muted small mb-0">Provide details about the incident</p>
+      </div>
+
+      <!-- Selected Policy Summary -->
+      <div class="selected-policy-summary mb-3" *ngIf="selectedPolicy">
+        <div class="d-flex align-items-center gap-2">
+          <div class="policy-icon small" [ngClass]="selectedPolicy.product.toLowerCase()">
+            <i [class]="getPolicyTypeIcon(selectedPolicy.product)"></i>
+          </div>
+          <div>
+            <div class="fw-semibold small">{{ selectedPolicy.policyNumber }}</div>
+            <div class="text-muted x-small">{{ selectedPolicy.customer.name }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loss Details Form -->
+      <form [formGroup]="lossDetailsForm" class="loss-details-form">
+        <!-- Loss Type -->
+        <div class="form-group mb-3">
+          <label class="form-label required">Loss Type</label>
+          <p-select
+            formControlName="lossType"
+            [options]="lossTypes"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select loss type"
+            styleClass="w-100"
+            [class.ng-invalid]="isFieldInvalid('lossType')"
+          ></p-select>
+          <small class="text-danger" *ngIf="isFieldInvalid('lossType')">
+            {{ getFieldError('lossType') }}
+          </small>
+        </div>
+
+        <!-- Loss Date & Time Row -->
+        <div class="row mb-3">
+          <div class="col-6">
+            <div class="form-group">
+              <label class="form-label required">Loss Date</label>
+              <p-datepicker
+                formControlName="lossDate"
+                [maxDate]="maxDate"
+                dateFormat="dd/mm/yy"
+                placeholder="Select date"
+                styleClass="w-100"
+                [showIcon]="true"
+              ></p-datepicker>
+              <small class="text-danger" *ngIf="isFieldInvalid('lossDate')">
+                {{ getFieldError('lossDate') }}
+              </small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label class="form-label required">Loss Time</label>
+              <input
+                type="text"
+                pInputText
+                formControlName="lossTime"
+                placeholder="HH:MM (e.g., 14:30)"
+                class="w-100"
+                [class.ng-invalid]="isFieldInvalid('lossTime')"
+              />
+              <small class="text-danger" *ngIf="isFieldInvalid('lossTime')">
+                {{ getFieldError('lossTime') }}
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incident Description -->
+        <div class="form-group mb-3">
+          <label class="form-label required">Incident Description</label>
+          <textarea
+            pInputTextarea
+            formControlName="incidentDescription"
+            rows="4"
+            placeholder="Describe the incident in detail (min 20 characters)..."
+            class="w-100"
+            [class.ng-invalid]="isFieldInvalid('incidentDescription')"
+          ></textarea>
+          <div class="d-flex justify-content-between">
+            <small class="text-danger" *ngIf="isFieldInvalid('incidentDescription')">
+              {{ getFieldError('incidentDescription') }}
+            </small>
+            <small class="text-muted ms-auto">
+              {{ lossDetailsForm.get('incidentDescription')?.value?.length || 0 }}/500
+            </small>
+          </div>
+        </div>
+
+        <!-- Injury Checkbox -->
+        <div class="form-group mb-3">
+          <div class="form-check-wrapper">
+            <p-checkbox
+              formControlName="injury"
+              [binary]="true"
+              inputId="injury"
+            ></p-checkbox>
+            <label for="injury" class="form-check-label ms-2">
+              Personal injury involved
+            </label>
+          </div>
+        </div>
+
+        <!-- Police Report Checkbox & Reference -->
+        <div class="form-group mb-3">
+          <div class="form-check-wrapper">
+            <p-checkbox
+              formControlName="policeReport"
+              [binary]="true"
+              inputId="policeReport"
+            ></p-checkbox>
+            <label for="policeReport" class="form-check-label ms-2">
+              Police report filed
+            </label>
+          </div>
+        </div>
+
+        <!-- Police Reference (conditional) -->
+        <div class="form-group mb-3" *ngIf="lossDetailsForm.get('policeReport')?.value">
+          <label class="form-label required">Police Reference Number</label>
+          <input
+            type="text"
+            pInputText
+            formControlName="policeRef"
+            placeholder="Enter police reference number"
+            class="w-100"
+            [class.ng-invalid]="isFieldInvalid('policeRef')"
+          />
+          <small class="text-danger" *ngIf="isFieldInvalid('policeRef')">
+            {{ getFieldError('policeRef') }}
+          </small>
+        </div>
+
+        <!-- Handler Selection -->
+        <div class="form-group mb-3">
+          <label class="form-label">Assign Handler (Optional)</label>
+          <div class="handler-list">
+            <div
+              *ngFor="let handler of handlers"
+              class="handler-option"
+              [class.selected]="lossDetailsForm.get('assignedTo')?.value === handler.id"
+              (click)="lossDetailsForm.get('assignedTo')?.setValue(handler.id)"
+            >
+              <div class="handler-avatar">{{ getHandlerInitials(handler.name) }}</div>
+              <div class="handler-info">
+                <div class="handler-name">{{ handler.name }}</div>
+                <div class="handler-team text-muted small">{{ handler.team }}</div>
+              </div>
+              <div class="handler-check" *ngIf="lossDetailsForm.get('assignedTo')?.value === handler.id">
+                <i class="pi pi-check"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="drawer-footer">
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      class="p-button-text p-button-secondary"
+      (click)="closePanel()"
+    ></button>
+
+    <div class="d-flex gap-2">
+      <button
+        pButton
+        type="button"
+        label="Previous"
+        icon="pi pi-arrow-left"
+        class="p-button-outlined"
+        *ngIf="currentStep > 0"
+        (click)="prevStep()"
+      ></button>
+
+      <button
+        pButton
+        type="button"
+        label="Next"
+        icon="pi pi-arrow-right"
+        iconPos="right"
+        *ngIf="currentStep === 0"
+        [disabled]="!canProceed()"
+        (click)="nextStep()"
+      ></button>
+
+      <button
+        pButton
+        type="button"
+        label="Submit Claim"
+        icon="pi pi-check"
+        *ngIf="currentStep === 1"
+        [disabled]="lossDetailsForm.invalid"
+        (click)="submitClaim()"
+      ></button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,382 @@
+.policy-list-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.container-fluid {
+  height: 100%;
+}
+
+.card-header-section {
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.card-header-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.header-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.search-input {
+  min-width: 220px;
+}
+
+.table-container {
+  padding: 1rem;
+}
+
+.cards-container {
+  padding: 1.5rem;
+}
+
+.cards-container .row {
+  align-items: stretch;
+}
+
+.cards-container .row > div {
+  display: flex;
+}
+
+.product-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.product-badge.motor {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  color: #6d28d9;
+}
+
+.product-badge.home {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #b45309;
+}
+
+.risk-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.risk-badge.standard {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.risk-badge.high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.risk-badge.low {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.customer-cell {
+  line-height: 1.4;
+}
+
+.asset-info {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.policy-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.policy-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.policy-card.motor {
+  border-left: 4px solid #8b5cf6;
+}
+
+.policy-card.home {
+  border-left: 4px solid #f59e0b;
+}
+
+.policy-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.policy-type-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.policy-type-icon.motor {
+  background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+  color: #5b21b6;
+}
+
+.policy-type-icon.home {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+  color: #92400e;
+}
+
+.policy-number {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.policy-product {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.policy-card-customer {
+  margin-bottom: 0.75rem;
+}
+
+.customer-name {
+  font-weight: 500;
+  color: #334155;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.customer-contact small {
+  font-size: 0.8rem;
+}
+
+.policy-card-asset {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.asset-title {
+  font-weight: 500;
+  color: #334155;
+  font-size: 0.875rem;
+}
+
+.asset-subtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+}
+
+.policy-card-financials {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px dashed #e2e8f0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.financial-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.financial-item .label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.financial-item .value {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+
+.policy-card-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.date-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.date-item.expiring-soon {
+  color: #dc2626;
+}
+
+.days-badge {
+  margin-left: 0.5rem;
+  background: #fef3c7;
+  color: #b45309;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.policy-card-notes {
+  margin-top: auto;
+  background: #fffbeb;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.notes-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #92400e;
+  margin-bottom: 0.35rem;
+}
+
+.notes-list {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.8rem;
+  color: #78350f;
+}
+
+.notes-list li {
+  margin-bottom: 0.15rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #94a3b8;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.75rem;
+  border-color: #e2e8f0;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem;
+  border-color: #f1f5f9;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background: #f8fafc;
+}
+
+:host ::ng-deep .p-selectbutton .p-button {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+:host ::ng-deep .p-selectbutton .p-button.p-highlight {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+:host ::ng-deep .p-paginator {
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Clickable Row & Card Styles */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: #f8fafc !important;
+}
+
+.clickable-card {
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.clickable-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #6366f1;
+}
+
+@media (max-width: 768px) {
+  .card-header-section {
+    padding: 1rem;
+  }
+
+  .search-input {
+    min-width: 100%;
+  }
+
+  .policy-card-financials {
+    gap: 0.75rem;
+  }
+}

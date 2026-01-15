@@ -1,0 +1,112 @@
+<div class="chatbot-overlay" [class.open]="isOpen" (click)="close()"></div>
+
+<div class="chatbot-drawer" [class.open]="isOpen">
+  <!-- Header -->
+  <div class="chatbot-header">
+    <div class="d-flex align-items-center gap-3">
+      <div class="bot-avatar">
+        <i class="pi pi-sparkles"></i>
+      </div>
+      <div>
+        <h5 class="mb-0">AI Claims Assistant</h5>
+        <small class="status-online">
+          <span class="status-dot"></span>
+          Online
+        </small>
+      </div>
+    </div>
+    <button
+      pButton
+      type="button"
+      class="p-button-text p-button-rounded close-btn"
+      icon="pi pi-times"
+      (click)="close()"
+    ></button>
+  </div>
+
+  <!-- Messages Container -->
+  <div class="chatbot-messages">
+    <div
+      *ngFor="let message of messages"
+      class="message"
+      [class.user]="message.sender === 'user'"
+      [class.bot]="message.sender === 'bot'"
+    >
+      <div class="message-avatar" *ngIf="message.sender === 'bot'">
+        <i class="pi pi-sparkles"></i>
+      </div>
+      <div class="message-content">
+        <div class="message-bubble" [innerHTML]="formatMessage(message.content)"></div>
+
+        <!-- Claim Cards Display -->
+        <div class="claim-cards" *ngIf="message.type === 'claim-card' && message.data">
+          <div class="claim-card" *ngFor="let claim of message.data">
+            <div class="claim-card-header">
+              <span class="claim-id">{{ claim.id }}</span>
+              <span class="claim-status" [ngClass]="claim.status.toLowerCase().replace(' ', '-')">{{ claim.status }}</span>
+            </div>
+            <div class="claim-card-body">
+              <div class="claim-detail"><i class="pi pi-tag"></i> {{ claim.type }}</div>
+              <div class="claim-detail"><i class="pi pi-pound"></i> {{ claim.amount }}</div>
+              <div class="claim-detail"><i class="pi pi-calendar"></i> {{ claim.date }}</div>
+              <div class="claim-detail"><i class="pi pi-user"></i> {{ claim.handler }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="message-time">
+          {{ message.timestamp | date:'shortTime' }}
+        </div>
+      </div>
+      <div class="message-avatar user-avatar" *ngIf="message.sender === 'user'">
+        <i class="pi pi-user"></i>
+      </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div class="message bot" *ngIf="isTyping">
+      <div class="message-avatar">
+        <i class="pi pi-sparkles"></i>
+      </div>
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="chatbot-input">
+    <div class="input-wrapper">
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="userInput"
+        placeholder="Type your message..."
+        (keypress)="onKeyPress($event)"
+        class="chat-input"
+      />
+      <button
+        pButton
+        type="button"
+        class="send-btn"
+        icon="pi pi-send"
+        [disabled]="!userInput.trim()"
+        (click)="sendMessage()"
+      ></button>
+    </div>
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <button
+        *ngFor="let action of quickActions"
+        class="quick-action-btn"
+        (click)="onQuickAction(action)">
+        <i [class]="action.icon"></i>
+        <span>{{ action.label }}</span>
+      </button>
+    </div>
+  </div>
+</div>

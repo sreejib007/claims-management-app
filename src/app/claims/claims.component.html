@@ -1,0 +1,300 @@
+<div class="container-fluid">
+  <!-- Main Card Container -->
+  <div class="claims-list-card">
+    <!-- Card Header -->
+    <div class="card-header-section">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <div class="header-icon">
+            <i class="pi pi-file-edit"></i>
+          </div>
+          <div>
+            <h2 class="mb-0">Claims</h2>
+            <small class="text-muted">{{ filteredClaims.length }} of {{ claims.length }} claims</small>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <!-- Search -->
+          <p-iconfield>
+            <p-inputicon styleClass="pi pi-search" />
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="searchTerm"
+              (input)="onSearch()"
+              placeholder="Search claims..."
+              class="search-input" />
+          </p-iconfield>
+
+          <!-- Status Filter -->
+          <p-select
+            [(ngModel)]="selectedStatus"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Status"
+            (onChange)="onFilterChange()"
+            styleClass="filter-dropdown"
+          ></p-select>
+
+          <!-- Loss Type Filter -->
+          <p-select
+            [(ngModel)]="selectedLossType"
+            [options]="lossTypeOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Loss Type"
+            (onChange)="onFilterChange()"
+            styleClass="filter-dropdown"
+          ></p-select>
+
+          <!-- Clear Filters -->
+          <button
+            pButton
+            type="button"
+            icon="pi pi-filter-slash"
+            class="p-button-outlined p-button-secondary"
+            (click)="clearFilters()"
+            *ngIf="getActiveFilterCount() > 0"
+            pTooltip="Clear Filters"
+            tooltipPosition="bottom">
+            <span class="filter-badge" *ngIf="getActiveFilterCount() > 0">{{ getActiveFilterCount() }}</span>
+          </button>
+
+          <!-- View Toggle -->
+          <p-selectbutton
+            [options]="viewOptions"
+            [(ngModel)]="viewMode"
+            optionLabel="label"
+            optionValue="value">
+            <ng-template pTemplate="item" let-item>
+              <i [class]="item.icon" class="me-2"></i>
+              <span>{{ item.label }}</span>
+            </ng-template>
+          </p-selectbutton>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table View -->
+    <div *ngIf="viewMode === 'table'" class="table-container">
+      <p-table
+        [value]="filteredClaims"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 25]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} claims"
+        [tableStyle]="{ 'min-width': '100%' }"
+        styleClass="p-datatable-sm p-datatable-striped">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="claimNumber">Claim # <p-sortIcon field="claimNumber" /></th>
+            <th pSortableColumn="policyId">Policy <p-sortIcon field="policyId" /></th>
+            <th pSortableColumn="lossType">Loss Type <p-sortIcon field="lossType" /></th>
+            <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
+            <th pSortableColumn="lossDateTime">Loss Date <p-sortIcon field="lossDateTime" /></th>
+            <th pSortableColumn="estimatedImpactGBP">Impact <p-sortIcon field="estimatedImpactGBP" /></th>
+            <th>Handler</th>
+            <th>Risk Flags</th>
+            <th>Recommendation</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-claim>
+          <tr class="clickable-row" (click)="openClaimDetail(claim)">
+            <td>
+              <span class="fw-semibold text-primary">{{ claim.claimNumber }}</span>
+            </td>
+            <td>
+              <div class="policy-cell">
+                <div class="fw-medium">{{ getPolicyNumber(claim.policyId) }}</div>
+                <small class="text-muted">{{ getCustomerName(claim.policyId) }}</small>
+              </div>
+            </td>
+            <td>
+              <span class="loss-type-badge" [ngClass]="claim.lossType.toLowerCase().replace(' ', '-')">
+                <i [class]="getLossTypeIcon(claim.lossType)" class="me-1"></i>
+                {{ claim.lossType }}
+              </span>
+            </td>
+            <td>
+              <p-tag [value]="claim.status" [severity]="getStatusSeverity(claim.status)" />
+            </td>
+            <td>
+              <div class="date-cell">
+                <span>{{ formatDate(claim.lossDateTime) }}</span>
+                <small class="text-muted d-block">{{ getDaysSinceLoss(claim.lossDateTime) }} days ago</small>
+              </div>
+            </td>
+            <td class="fw-semibold">{{ formatCurrency(claim.estimatedImpactGBP) }}</td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="handler-avatar-sm" [class.unassigned]="!claim.assignedTo">
+                  {{ getHandlerInitials(claim.assignedTo) }}
+                </div>
+                <span [class.text-muted]="!claim.assignedTo">{{ getHandlerName(claim.assignedTo) }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="risk-flags">
+                <span
+                  *ngFor="let flag of claim.riskFlags"
+                  class="risk-flag-badge"
+                  pTooltip="{{ getRiskFlagLabel(flag) }}"
+                  tooltipPosition="top">
+                  {{ flag }}
+                </span>
+                <span *ngIf="claim.riskFlags.length === 0" class="text-muted">None</span>
+              </div>
+            </td>
+            <td>
+              <p-tag
+                [value]="claim.recommendation"
+                [severity]="getRecommendationSeverity(claim.recommendation)"
+                [rounded]="true" />
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="9" class="text-center py-4">
+              <i class="pi pi-inbox text-muted" style="font-size: 2rem;"></i>
+              <p class="text-muted mt-2 mb-0">No claims found</p>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Card View -->
+    <div *ngIf="viewMode === 'cards'" class="cards-container">
+      <div class="row g-3">
+        <div *ngFor="let claim of filteredClaims" class="col-12 col-md-6 col-xl-4">
+          <div class="claim-card clickable-card" [ngClass]="claim.status.toLowerCase().replace(' ', '-')" (click)="openClaimDetail(claim)">
+            <!-- Card Header -->
+            <div class="claim-card-header">
+              <div class="d-flex align-items-center gap-2">
+                <div class="claim-type-icon" [ngClass]="claim.lossType.toLowerCase().replace(' ', '-')">
+                  <i [class]="getLossTypeIcon(claim.lossType)"></i>
+                </div>
+                <div>
+                  <div class="claim-number">{{ claim.claimNumber }}</div>
+                  <div class="claim-type">{{ claim.lossType }}</div>
+                </div>
+              </div>
+              <p-tag [value]="claim.status" [severity]="getStatusSeverity(claim.status)" />
+            </div>
+
+            <!-- Policy Info -->
+            <div class="claim-card-policy">
+              <div class="policy-info">
+                <i class="pi pi-file me-2"></i>
+                <span class="fw-medium">{{ getPolicyNumber(claim.policyId) }}</span>
+              </div>
+              <div class="customer-info">
+                <small class="text-muted">
+                  <i class="pi pi-user me-1"></i>{{ getCustomerName(claim.policyId) }}
+                </small>
+              </div>
+            </div>
+
+            <!-- Incident Summary -->
+            <div class="claim-card-incident">
+              <div class="incident-description">
+                {{ claim.incidentDescription | slice:0:100 }}{{ claim.incidentDescription.length > 100 ? '...' : '' }}
+              </div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="claim-card-details">
+              <div class="detail-item">
+                <span class="label">Loss Date</span>
+                <span class="value">{{ formatDate(claim.lossDateTime) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Impact</span>
+                <span class="value fw-semibold">{{ formatCurrency(claim.estimatedImpactGBP) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Days Since Loss</span>
+                <span class="value">{{ getDaysSinceLoss(claim.lossDateTime) }} days</span>
+              </div>
+            </div>
+
+            <!-- Handler -->
+            <div class="claim-card-handler">
+              <div class="d-flex align-items-center gap-2">
+                <div class="handler-avatar" [class.unassigned]="!claim.assignedTo">
+                  {{ getHandlerInitials(claim.assignedTo) }}
+                </div>
+                <div>
+                  <div class="handler-name">{{ getHandlerName(claim.assignedTo) }}</div>
+                  <div class="handler-label text-muted small">Handler</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk Flags -->
+            <div class="claim-card-flags" *ngIf="claim.riskFlags.length > 0">
+              <div class="flags-label">
+                <i class="pi pi-flag me-1"></i>Risk Flags
+              </div>
+              <div class="flags-list">
+                <span
+                  *ngFor="let flag of claim.riskFlags"
+                  class="risk-flag-badge"
+                  pTooltip="{{ getRiskFlagLabel(flag) }}"
+                  tooltipPosition="top">
+                  {{ flag }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Recommendation -->
+            <div class="claim-card-recommendation">
+              <p-tag
+                [value]="claim.recommendation"
+                [severity]="getRecommendationSeverity(claim.recommendation)"
+                [rounded]="true" />
+            </div>
+
+            <!-- Indicators -->
+            <div class="claim-card-indicators">
+              <span class="indicator" *ngIf="claim.injury" pTooltip="Personal Injury" tooltipPosition="top">
+                <i class="pi pi-heart"></i>
+              </span>
+              <span class="indicator" *ngIf="claim.policeReport" pTooltip="Police Report Filed" tooltipPosition="top">
+                <i class="pi pi-shield"></i>
+              </span>
+              <span class="indicator docs" pTooltip="{{ claim.documents.length }} Documents" tooltipPosition="top">
+                <i class="pi pi-paperclip"></i>
+                <span class="count">{{ claim.documents.length }}</span>
+              </span>
+              <span class="indicator notes" pTooltip="{{ claim.notes.length }} Notes" tooltipPosition="top">
+                <i class="pi pi-comment"></i>
+                <span class="count">{{ claim.notes.length }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredClaims.length === 0" class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <p>No claims found</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Claim Detail Drawer -->
+<app-claim-detail
+  [(isOpen)]="isDetailDrawerOpen"
+  [claimId]="selectedClaimId"
+  (isOpenChange)="closeClaimDetail()">
+</app-claim-detail>

@@ -1,0 +1,347 @@
+.handler-list-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.container-fluid {
+  height: 100%;
+}
+
+.card-header-section {
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.card-header-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.header-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.search-input {
+  min-width: 220px;
+}
+
+.table-container {
+  padding: 1rem;
+}
+
+.cards-container {
+  padding: 1.5rem;
+}
+
+.cards-container .row {
+  align-items: stretch;
+}
+
+.cards-container .row > div {
+  display: flex;
+}
+
+.handler-id {
+  font-family: 'Consolas', monospace;
+  font-size: 0.85rem;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.handler-avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5e81ac 0%, #81a1c1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.team-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.team-badge.fnol {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1d4ed8;
+}
+
+.team-badge.triage {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #b45309;
+}
+
+.team-badge.siu {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #991b1b;
+}
+
+.handler-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.handler-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.handler-card.fnol {
+  border-left: 4px solid #3b82f6;
+}
+
+.handler-card.triage {
+  border-left: 4px solid #f59e0b;
+}
+
+.handler-card.siu {
+  border-left: 4px solid #ef4444;
+}
+
+.handler-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.handler-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.handler-avatar.fnol {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+}
+
+.handler-avatar.triage {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.handler-avatar.siu {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+}
+
+.handler-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 1rem;
+}
+
+.handler-id-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-family: 'Consolas', monospace;
+}
+
+.handler-card-team {
+  margin-bottom: 0.75rem;
+}
+
+.team-detail {
+  font-size: 0.9rem;
+  color: #475569;
+  display: flex;
+  align-items: center;
+}
+
+.handler-card-workload {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.workload-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.workload-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.workload-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.workload-count.success {
+  color: #16a34a;
+}
+
+.workload-count.info {
+  color: #2563eb;
+}
+
+.workload-count.warn {
+  color: #d97706;
+}
+
+.workload-count.danger {
+  color: #dc2626;
+}
+
+.workload-text {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.handler-card-status {
+  margin-top: auto;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.status-indicator.available {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-indicator.busy {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #94a3b8;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.75rem;
+  border-color: #e2e8f0;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem;
+  border-color: #f1f5f9;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background: #f8fafc;
+}
+
+:host ::ng-deep .p-selectbutton .p-button {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+:host ::ng-deep .p-selectbutton .p-button.p-highlight {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+:host ::ng-deep .p-paginator {
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Clickable Row & Card Styles */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: #f8fafc !important;
+}
+
+.clickable-card {
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.clickable-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #6366f1;
+}
+
+@media (max-width: 768px) {
+  .card-header-section {
+    padding: 1rem;
+  }
+
+  .search-input {
+    min-width: 100%;
+  }
+}

@@ -1,0 +1,382 @@
+<app-detail-drawer
+  [(isOpen)]="isOpen"
+  [title]="claim?.claimNumber || 'Claim Details'"
+  [subtitle]="claim?.lossType || ''"
+  icon="pi pi-file-edit"
+  (isOpenChange)="close()">
+
+  <div class="detail-content" *ngIf="claim">
+    <!-- Policy Warning Banner -->
+    <p-message *ngIf="isPolicyInactive()" severity="warn" styleClass="w-100 mb-0">
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <strong>Warning:</strong> Policy is {{ policy?.status }} - not currently active
+    </p-message>
+
+    <!-- Status Banner with Triage Actions -->
+    <div class="status-banner" [ngClass]="claim.status.toLowerCase().replace(' ', '-')">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <p-tag [value]="claim.status" [severity]="getStatusSeverity(claim.status)" />
+          <span class="recommendation-badge">{{ claim.recommendation }}</span>
+        </div>
+        <div class="created-date">
+          <i class="pi pi-calendar me-1"></i>
+          Created {{ formatDate(claim.createdAt) }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Triage Actions Bar -->
+    <div class="triage-actions">
+      <div class="triage-action">
+        <label class="triage-label">Status</label>
+        <p-select
+          [(ngModel)]="selectedStatus"
+          [options]="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select Status"
+          (onChange)="onStatusChange()"
+          styleClass="triage-select" />
+      </div>
+      <div class="triage-action">
+        <label class="triage-label">Assigned To</label>
+        <p-select
+          [(ngModel)]="selectedHandlerId"
+          [options]="handlerOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select Handler"
+          (onChange)="onHandlerChange()"
+          styleClass="triage-select" />
+      </div>
+      <div class="triage-action doc-progress">
+        <label class="triage-label">Documents</label>
+        <div class="doc-progress-bar">
+          <span class="doc-count">{{ getReceivedDocCount() }} / {{ getTotalDocCount() }}</span>
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="getTotalDocCount() > 0 ? (getReceivedDocCount() / getTotalDocCount() * 100) : 0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0"><i class="pi pi-info-circle me-2"></i>Overview</p-tab>
+        <p-tab value="1"><i class="pi pi-file me-2"></i>Policy</p-tab>
+        <p-tab value="2"><i class="pi pi-user me-2"></i>Customer</p-tab>
+        <p-tab value="3"><i class="pi pi-clock me-2"></i>History</p-tab>
+        <p-tab value="4"><i class="pi pi-paperclip me-2"></i>Documents</p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+        <!-- Overview Tab -->
+        <p-tabpanel value="0">
+          <div class="tab-content">
+            <!-- Claim Summary -->
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-file-edit me-2"></i>Claim Summary</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Claim Number</span>
+                  <span class="info-value fw-semibold">{{ claim.claimNumber }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Loss Type</span>
+                  <app-type-badge [type]="claim.lossType" category="loss"></app-type-badge>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Loss Date & Time</span>
+                  <span class="info-value">{{ formatDateTime(claim.lossDateTime) }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Estimated Impact</span>
+                  <span class="info-value fw-bold text-danger">{{ formatCurrency(claim.estimatedImpactGBP) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Incident Description -->
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-align-left me-2"></i>Incident Description</h6>
+              <p class="incident-description">{{ claim.incidentDescription }}</p>
+            </div>
+
+            <!-- Risk Flags -->
+            <div class="detail-section risk-flags-section" *ngIf="claim.riskFlags.length > 0">
+              <h6 class="section-title"><i class="pi pi-flag me-2"></i>Risk Flags ({{ claim.riskFlags.length }})</h6>
+              <div class="risk-flags-grid">
+                <div *ngFor="let flag of claim.riskFlags" class="risk-flag-card" [ngClass]="getRiskFlagSeverity(flag)">
+                  <div class="risk-flag-icon">
+                    <i class="pi pi-exclamation-triangle"></i>
+                  </div>
+                  <div class="risk-flag-content">
+                    <span class="risk-flag-code">{{ flag }}</span>
+                    <span class="risk-flag-label">{{ getRiskFlagLabel(flag) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Indicators -->
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-check-circle me-2"></i>Indicators</h6>
+              <div class="indicators-grid">
+                <div class="indicator-item" [class.active]="claim.injury">
+                  <i class="pi pi-heart"></i>
+                  <span>Personal Injury</span>
+                  <i class="pi" [ngClass]="claim.injury ? 'pi-check text-success' : 'pi-times text-muted'"></i>
+                </div>
+                <div class="indicator-item" [class.active]="claim.policeReport">
+                  <i class="pi pi-shield"></i>
+                  <span>Police Report</span>
+                  <i class="pi" [ngClass]="claim.policeReport ? 'pi-check text-success' : 'pi-times text-muted'"></i>
+                </div>
+              </div>
+              <div class="police-ref" *ngIf="claim.policeReport && claim.policeRef">
+                <strong>Police Reference:</strong> {{ claim.policeRef }}
+              </div>
+            </div>
+
+            <!-- Handler -->
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-user me-2"></i>Assigned Handler</h6>
+              <div class="handler-card" *ngIf="handler; else noHandler">
+                <app-avatar [name]="handler.name" size="lg" color="primary"></app-avatar>
+                <div class="handler-info">
+                  <div class="handler-name">{{ handler.name }}</div>
+                  <div class="handler-team">{{ handler.team }} Team</div>
+                </div>
+              </div>
+              <ng-template #noHandler>
+                <div class="no-handler">
+                  <app-avatar name="" size="lg" icon="pi pi-user"></app-avatar>
+                  <span>Unassigned</span>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Policy Tab -->
+        <p-tabpanel value="1">
+          <div class="tab-content" *ngIf="policy">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-folder me-2"></i>Policy Details</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Policy Number</span>
+                  <span class="info-value fw-semibold">{{ policy.policyNumber }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Product</span>
+                  <app-type-badge [type]="policy.product" category="product"></app-type-badge>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Status</span>
+                  <app-status-badge [status]="policy.status" type="policy"></app-status-badge>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Risk Tier</span>
+                  <span class="info-value">{{ policy.riskTier }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Start Date</span>
+                  <span class="info-value">{{ formatDate(policy.startDate) }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">End Date</span>
+                  <span class="info-value">{{ formatDate(policy.endDate) }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Days Remaining</span>
+                  <span class="info-value" [class.text-danger]="getDaysRemaining() < 30">
+                    {{ getDaysRemaining() }} days
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-pound me-2"></i>Financial Details</h6>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Annual Premium</span>
+                  <span class="info-value fw-semibold">{{ formatCurrency(policy.premiumAnnualGBP) }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Excess</span>
+                  <span class="info-value">{{ formatCurrency(policy.excessGBP) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section" *ngIf="policy.policyNotes?.length">
+              <h6 class="section-title"><i class="pi pi-info-circle me-2"></i>Policy Notes</h6>
+              <ul class="policy-notes">
+                <li *ngFor="let note of policy.policyNotes">{{ note }}</li>
+              </ul>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Customer Tab -->
+        <p-tabpanel value="2">
+          <div class="tab-content" *ngIf="policy?.customer">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-user me-2"></i>Customer Information</h6>
+              <div class="customer-header">
+                <app-avatar [name]="policy?.customer?.name || ''" size="xl" color="secondary"></app-avatar>
+                <div class="customer-name-section">
+                  <h5 class="mb-1">{{ policy?.customer?.name }}</h5>
+                  <span class="customer-id">ID: {{ policy?.customer?.customerId }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-phone me-2"></i>Contact Details</h6>
+              <div class="contact-list">
+                <div class="contact-item">
+                  <app-icon-box icon="pi pi-envelope" size="sm" color="subtle-primary"></app-icon-box>
+                  <div>
+                    <span class="contact-label">Email</span>
+                    <a class="contact-value" [href]="'mailto:' + policy?.customer?.email">{{ policy?.customer?.email }}</a>
+                  </div>
+                </div>
+                <div class="contact-item">
+                  <app-icon-box icon="pi pi-phone" size="sm" color="subtle-success"></app-icon-box>
+                  <div>
+                    <span class="contact-label">Phone</span>
+                    <a class="contact-value" [href]="'tel:' + policy?.customer?.phone">{{ policy?.customer?.phone }}</a>
+                  </div>
+                </div>
+                <div class="contact-item">
+                  <app-icon-box icon="pi pi-map-marker" size="sm" color="subtle-warning"></app-icon-box>
+                  <div>
+                    <span class="contact-label">Address</span>
+                    <span class="contact-value">{{ policy?.customer?.address }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- History Tab -->
+        <p-tabpanel value="3">
+          <div class="tab-content">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-clock me-2"></i>Claim Timeline</h6>
+              <div class="timeline-container">
+                <div class="timeline-item" *ngFor="let event of timeline">
+                  <div class="timeline-marker" [style.background]="event.color">
+                    <i [class]="event.icon"></i>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-header">
+                      <span class="timeline-status">{{ event.status }}</span>
+                      <span class="timeline-date">{{ formatDateTime(event.date) }}</span>
+                    </div>
+                    <p class="timeline-description">{{ event.description }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Note Form -->
+            <div class="detail-section add-note-section">
+              <h6 class="section-title"><i class="pi pi-plus me-2"></i>Add Note</h6>
+              <div class="add-note-form">
+                <textarea
+                  pInputTextarea
+                  [(ngModel)]="newNoteText"
+                  placeholder="Enter your note here..."
+                  rows="3"
+                  class="note-textarea"></textarea>
+                <button
+                  pButton
+                  label="Add Note"
+                  icon="pi pi-send"
+                  [disabled]="!newNoteText.trim()"
+                  (click)="addNote()"
+                  class="add-note-btn"></button>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-comments me-2"></i>Notes ({{ claim.notes.length }})</h6>
+              <div class="notes-list" *ngIf="claim.notes.length > 0; else noNotes">
+                <div class="note-item" *ngFor="let note of claim.notes">
+                  <div class="note-header">
+                    <app-avatar [name]="getNoteAuthorName(note.authorId)" size="sm" color="info"></app-avatar>
+                    <div class="note-meta">
+                      <span class="note-author">{{ getNoteAuthorName(note.authorId) }}</span>
+                      <span class="note-date">{{ formatDateTime(note.createdAt) }}</span>
+                    </div>
+                  </div>
+                  <p class="note-text">{{ note.text }}</p>
+                </div>
+              </div>
+              <ng-template #noNotes>
+                <div class="empty-state-small">
+                  <i class="pi pi-comments"></i>
+                  <span>No notes yet</span>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- Documents Tab -->
+        <p-tabpanel value="4">
+          <div class="tab-content">
+            <div class="detail-section">
+              <h6 class="section-title"><i class="pi pi-paperclip me-2"></i>Documents ({{ claim.documents.length }})</h6>
+              <div class="doc-summary mb-3">
+                  <span class="doc-summary-text">
+                    <i class="pi pi-check-circle text-success me-1"></i>
+                    {{ getReceivedDocCount() }} received
+                  </span>
+                  <span class="doc-summary-text">
+                    <i class="pi pi-clock text-warning me-1"></i>
+                    {{ getTotalDocCount() - getReceivedDocCount() }} pending
+                  </span>
+                </div>
+                <div class="documents-list">
+                <div class="document-item" *ngFor="let doc of claim.documents" [class.received]="doc.received">
+                  <div class="document-icon" [class.received]="doc.received">
+                    <i [class]="getDocumentIcon(doc.name)"></i>
+                  </div>
+                  <div class="document-info">
+                    <span class="document-name">{{ doc.name }}</span>
+                    <span class="document-id">{{ doc.docId }}</span>
+                  </div>
+                  <div class="document-actions">
+                    <button
+                      pButton
+                      [icon]="doc.received ? 'pi pi-check-circle' : 'pi pi-circle'"
+                      [label]="doc.received ? 'Received' : 'Mark Received'"
+                      [class]="doc.received ? 'p-button-success p-button-sm' : 'p-button-outlined p-button-sm'"
+                      (click)="toggleDocumentReceived(doc.docId)"
+                      pTooltip="Click to toggle received status">
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <ng-template #noDocuments>
+                <div class="empty-state">
+                  <i class="pi pi-inbox"></i>
+                  <p>No documents attached</p>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</app-detail-drawer>

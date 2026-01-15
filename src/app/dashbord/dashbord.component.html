@@ -1,0 +1,120 @@
+<div class="dashboard-container">
+  <!-- Executive Summary Header -->
+  <div class="executive-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <div class="header-icon">
+          <i class="pi pi-th-large"></i>
+        </div>
+        <div>
+          <h4 class="mb-0 fw-bold text-white">Claims Dashboard</h4>
+          <span class="header-subtitle">Real-time performance metrics</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="action-btn" (click)="onNewClaimClick()">
+          <i class="pi pi-plus"></i>
+          <span>New Claim</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics Grid -->
+  <div class="metrics-section">
+    <div class="row g-3">
+      <div class="col-6 col-md-4 col-xl" *ngFor="let metric of metrics; let i = index">
+        <app-metric-card
+          [label]="metric.title"
+          [value]="metric.value"
+          [icon]="metric.icon"
+          [iconBg]="metric.iconBg"
+          [trend]="metric.trend || ''"
+          [trendUp]="metric.trendUp || false"
+          [colorVariant]="'variant-' + (i % 5)">
+        </app-metric-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <div class="row g-3">
+      <!-- Claims Distribution Chart -->
+      <div class="col-12 col-lg-6">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <app-icon-box icon="pi pi-chart-pie" size="sm" color="subtle-primary"></app-icon-box>
+              <div>
+                <h6 class="chart-title">Claims Distribution</h6>
+                <span class="chart-subtitle">New vs Open Claims</span>
+              </div>
+            </div>
+            <div class="chart-badge">
+              <span class="badge-dot"></span>
+              Live
+            </div>
+          </div>
+          <div class="chart-card-body">
+            <div class="row align-items-center">
+              <div class="col-7">
+                <div class="chart-container-donut">
+                  <canvas #claimsDonutChart></canvas>
+                </div>
+              </div>
+              <div class="col-5">
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <span class="legend-dot new"></span>
+                    <div class="legend-content">
+                      <span class="legend-value">{{ newClaimsCount }}</span>
+                      <span class="legend-label">New Claims</span>
+                    </div>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot open"></span>
+                    <div class="legend-content">
+                      <span class="legend-value">{{ openClaimsCount }}</span>
+                      <span class="legend-label">Open Claims</span>
+                    </div>
+                  </div>
+                  <div class="legend-item total">
+                    <span class="legend-dot total"></span>
+                    <div class="legend-content">
+                      <span class="legend-value">{{ newClaimsCount + openClaimsCount }}</span>
+                      <span class="legend-label">Total Active</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Handler Workload Chart -->
+      <div class="col-12 col-lg-6">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <app-icon-box icon="pi pi-users" size="sm" color="subtle-primary"></app-icon-box>
+              <div>
+                <h6 class="chart-title">Handler Workload</h6>
+                <span class="chart-subtitle">Claims per Handler</span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <span class="chart-period">This Week</span>
+            </div>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-container-bar">
+              <canvas #workloadChart></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

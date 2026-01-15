@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "primeicons/primeicons.css";
+
+/* Equal height for Policies & Handlers row */
+app-policies,
+app-handlers {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+app-policies .container-fluid,
+app-handlers .container-fluid {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+app-policies .policy-list-card,
+app-handlers .handler-list-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
