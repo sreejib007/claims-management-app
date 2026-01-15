@@ -39,53 +39,38 @@
 
   <!-- Charts Section -->
   <div class="charts-section">
-    <div class="row g-3">
-      <!-- Claims Distribution Chart -->
-      <div class="col-12 col-lg-6">
-        <div class="chart-card">
-          <div class="chart-card-header">
-            <div class="d-flex align-items-center gap-2">
-              <app-icon-box icon="pi pi-chart-pie" size="sm" color="subtle-primary"></app-icon-box>
-              <div>
-                <h6 class="chart-title">Claims Distribution</h6>
-                <span class="chart-subtitle">New vs Open Claims</span>
-              </div>
-            </div>
-            <div class="chart-badge">
-              <span class="badge-dot"></span>
-              Live
+    <!-- First Row: 3 Charts -->
+    <div class="row g-2">
+      <!-- Performance Radar Chart -->
+      <div class="col-4">
+        <div class="chart-card radar-card">
+          <div class="chart-card-header compact">
+            <h6 class="chart-title mb-0">Performance</h6>
+          </div>
+          <div class="chart-card-body compact">
+            <div class="chart-container-radar-sm">
+              <canvas #radarChart></canvas>
             </div>
           </div>
-          <div class="chart-card-body">
-            <div class="row align-items-center">
-              <div class="col-7">
-                <div class="chart-container-donut">
-                  <canvas #claimsDonutChart></canvas>
-                </div>
+        </div>
+      </div>
+
+      <!-- Claims by Loss Type -->
+      <div class="col-4">
+        <div class="chart-card">
+          <div class="chart-card-header compact">
+            <h6 class="chart-title mb-0">By Loss Type</h6>
+          </div>
+          <div class="chart-card-body compact">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="chart-container-donut-legend">
+                <canvas #lossTypeChart></canvas>
               </div>
-              <div class="col-5">
-                <div class="chart-legend">
-                  <div class="legend-item">
-                    <span class="legend-dot new"></span>
-                    <div class="legend-content">
-                      <span class="legend-value">{{ newClaimsCount }}</span>
-                      <span class="legend-label">New Claims</span>
-                    </div>
-                  </div>
-                  <div class="legend-item">
-                    <span class="legend-dot open"></span>
-                    <div class="legend-content">
-                      <span class="legend-value">{{ openClaimsCount }}</span>
-                      <span class="legend-label">Open Claims</span>
-                    </div>
-                  </div>
-                  <div class="legend-item total">
-                    <span class="legend-dot total"></span>
-                    <div class="legend-content">
-                      <span class="legend-value">{{ newClaimsCount + openClaimsCount }}</span>
-                      <span class="legend-label">Total Active</span>
-                    </div>
-                  </div>
+              <div class="loss-type-legend">
+                <div class="legend-row" *ngFor="let item of claimsByLossType; let i = index">
+                  <span class="legend-dot-sm" [style.background]="['#f87171', '#fbbf24', '#60a5fa', '#f472b6', '#a78bfa'][i]"></span>
+                  <span class="legend-text">{{ item.type }}</span>
+                  <span class="legend-count">{{ item.count }}</span>
                 </div>
               </div>
             </div>
@@ -93,89 +78,54 @@
         </div>
       </div>
 
-      <!-- Handler Workload Chart -->
-      <div class="col-12 col-lg-6">
+      <!-- Financial Impact -->
+      <div class="col-4">
         <div class="chart-card">
-          <div class="chart-card-header">
-            <div class="d-flex align-items-center gap-2">
-              <app-icon-box icon="pi pi-users" size="sm" color="subtle-primary"></app-icon-box>
-              <div>
-                <h6 class="chart-title">Handler Workload</h6>
-                <span class="chart-subtitle">Claims per Handler</span>
-              </div>
-            </div>
-            <div class="chart-actions">
-              <span class="chart-period">This Week</span>
-            </div>
+          <div class="chart-card-header compact">
+            <h6 class="chart-title mb-0">Financial Impact</h6>
+            <span class="chart-badge-sm danger">£ Priority</span>
           </div>
-          <div class="chart-card-body">
-            <div class="chart-container-bar">
-              <canvas #workloadChart></canvas>
+          <div class="chart-card-body compact">
+            <div class="chart-container-bar-sm">
+              <canvas #impactChart></canvas>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Second Row Charts -->
-    <div class="row g-3 mt-1">
-      <!-- Claims by Loss Type -->
-      <div class="col-12 col-lg-6">
-        <div class="chart-card">
-          <div class="chart-card-header">
+    <!-- Second Row: Claims Pipeline Full Width -->
+    <div class="row g-2 mt-2">
+      <div class="col-12">
+        <div class="chart-card pipeline-card-full">
+          <div class="chart-card-header compact">
             <div class="d-flex align-items-center gap-2">
-              <app-icon-box icon="pi pi-tag" size="sm" color="subtle-warning"></app-icon-box>
-              <div>
-                <h6 class="chart-title">Claims by Loss Type</h6>
-                <span class="chart-subtitle">Distribution by Category</span>
-              </div>
+              <app-icon-box icon="pi pi-sitemap" size="sm" color="subtle-primary"></app-icon-box>
+              <h6 class="chart-title mb-0">Claims Pipeline</h6>
             </div>
-            <div class="chart-badge chart-badge-warning">
-              <span class="badge-dot badge-dot-warning"></span>
-              Analysis
-            </div>
+            <div class="pipeline-total-badge">{{ totalClaimsInPipeline }} Total</div>
           </div>
-          <div class="chart-card-body">
-            <div class="row align-items-center">
-              <div class="col-7">
-                <div class="chart-container-donut">
-                  <canvas #lossTypeChart></canvas>
+          <div class="chart-card-body pipeline-body">
+            <div class="pipeline-row">
+              <div class="pipeline-stage-card" *ngFor="let stage of claimsPipeline; let last = last">
+                <div class="stage-progress-ring">
+                  <svg viewBox="0 0 36 36">
+                    <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    <path class="ring-progress"
+                      [style.stroke]="stage.color"
+                      [attr.stroke-dasharray]="stage.percentage + ', 100'"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                  </svg>
+                  <span class="ring-percent" [style.color]="stage.color">{{ stage.percentage | number:'1.0-0' }}%</span>
+                </div>
+                <div class="stage-details">
+                  <span class="stage-count-lg" [style.color]="stage.color">{{ stage.count }}</span>
+                  <span class="stage-label">{{ stage.status }}</span>
+                </div>
+                <div class="stage-arrow" *ngIf="!last">
+                  <i class="pi pi-arrow-right"></i>
                 </div>
               </div>
-              <div class="col-5">
-                <div class="chart-legend loss-type-legend">
-                  <div class="legend-item" *ngFor="let item of claimsByLossType; let i = index">
-                    <span class="legend-dot" [ngStyle]="{'background': ['#f87171', '#fbbf24', '#60a5fa', '#f472b6', '#a78bfa'][i]}"></span>
-                    <div class="legend-content">
-                      <span class="legend-value">{{ item.count }}</span>
-                      <span class="legend-label">{{ item.type }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Financial Impact by Loss Type -->
-      <div class="col-12 col-lg-6">
-        <div class="chart-card">
-          <div class="chart-card-header">
-            <div class="d-flex align-items-center gap-2">
-              <app-icon-box icon="pi pi-pound" size="sm" color="subtle-danger"></app-icon-box>
-              <div>
-                <h6 class="chart-title">Financial Impact</h6>
-                <span class="chart-subtitle">Estimated £ by Loss Type</span>
-              </div>
-            </div>
-            <div class="chart-actions">
-              <span class="chart-period-danger">High Priority</span>
-            </div>
-          </div>
-          <div class="chart-card-body">
-            <div class="chart-container-bar">
-              <canvas #impactChart></canvas>
             </div>
           </div>
         </div>

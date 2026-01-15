@@ -1,60 +1,17 @@
-<footer class="footer mt-auto">
-  <div class="container-fluid py-4">
-    <div class="row g-4">
-      <!-- Brand Column -->
-      <div class="col-12 col-md-4 text-center text-md-start">
-        <div class="d-flex align-items-center gap-2 justify-content-center justify-content-md-start mb-3">
-          <div class="footer-logo">
-            <i class="pi pi-shield"></i>
-          </div>
-          <span class="brand-name">ClaimsPro</span>
-        </div>
-        <p class="tagline mb-0">
-          Streamlining insurance claims management with intelligent automation and seamless workflows.
-        </p>
+<footer class="footer-compact mt-auto">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <i class="pi pi-shield footer-icon"></i>
+        <span class="footer-brand">ClaimsPro</span>
+        <span class="footer-divider">|</span>
+        <span class="footer-copyright">&copy; {{ currentYear }}</span>
       </div>
-
-      <!-- Quick Links Column -->
-      <div class="col-12 col-md-4 text-center">
-        <h6 class="footer-heading mb-3">Quick Links</h6>
-        <ul class="list-unstyled footer-links mb-0">
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Support</a></li>
-          <li><a href="#">Documentation</a></li>
-        </ul>
-      </div>
-
-      <!-- Social Column -->
-      <div class="col-12 col-md-4 text-center text-md-end">
-        <h6 class="footer-heading mb-3">Connect With Us</h6>
-        <div class="d-flex gap-2 justify-content-center justify-content-md-end">
-          <a href="#" class="social-btn" aria-label="Facebook">
-            <i class="pi pi-facebook"></i>
-          </a>
-          <a href="#" class="social-btn" aria-label="Twitter">
-            <i class="pi pi-twitter"></i>
-          </a>
-          <a href="#" class="social-btn" aria-label="LinkedIn">
-            <i class="pi pi-linkedin"></i>
-          </a>
-          <a href="#" class="social-btn" aria-label="Instagram">
-            <i class="pi pi-instagram"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Copyright Bar -->
-  <div class="copyright-bar">
-    <div class="container-fluid">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-        <span>&copy; {{ currentYear }} ClaimsPro. All rights reserved.</span>
-        <div class="d-flex align-items-center gap-3">
-          <span class="version-badge">v1.0.0</span>
-          <span class="text-white-50">Last Updated: {{ lastUpdated }}</span>
-        </div>
+      <div class="d-flex align-items-center gap-3">
+        <a href="#" class="footer-link">Privacy</a>
+        <a href="#" class="footer-link">Terms</a>
+        <a href="#" class="footer-link">Support</a>
+        <span class="version-badge-sm">v1.0.0</span>
       </div>
     </div>
   </div>

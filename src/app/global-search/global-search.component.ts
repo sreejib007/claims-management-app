@@ -1,10 +1,10 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { OverlayPanelModule, OverlayPanel } from 'primeng/overlaypanel';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { FnolDataService } from '../services/fnol-data.service';
@@ -280,6 +280,8 @@ interface SearchResult {
   `]
 })
 export class GlobalSearchComponent {
+  @ViewChild('searchResults') searchResultsPanel!: OverlayPanel;
+
   @Output() claimSelect = new EventEmitter<string>();
   @Output() policySelect = new EventEmitter<string>();
   @Output() handlerSelect = new EventEmitter<string>();
@@ -289,14 +291,12 @@ export class GlobalSearchComponent {
   isSearching = false;
 
   private searchTimeout: any;
-  private overlayPanel: any;
 
   constructor(private fnolDataService: FnolDataService) {}
 
   onFocus(event: Event): void {
-    const overlayPanel = document.querySelector('p-overlayPanel');
-    if (overlayPanel) {
-      (overlayPanel as any).show(event);
+    if (this.searchResultsPanel) {
+      this.searchResultsPanel.show(event);
     }
   }
 
@@ -412,6 +412,9 @@ export class GlobalSearchComponent {
     }
     this.searchTerm = '';
     this.results = [];
+    if (this.searchResultsPanel) {
+      this.searchResultsPanel.hide();
+    }
   }
 
   private getClaimStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' {

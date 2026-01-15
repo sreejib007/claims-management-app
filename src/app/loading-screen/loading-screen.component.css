@@ -69,13 +69,19 @@
   min-height: 60px;
 }
 
+.skeleton-footer-compact {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  min-height: 36px;
+}
+
 ::ng-deep .p-skeleton {
   background-color: #e2e8f0 !important;
   animation: p-skeleton-animation 1.2s infinite !important;
 }
 
 ::ng-deep .skeleton-header .p-skeleton,
-::ng-deep .skeleton-footer .p-skeleton {
+::ng-deep .skeleton-footer .p-skeleton,
+::ng-deep .skeleton-footer-compact .p-skeleton {
   background-color: rgba(255, 255, 255, 0.15) !important;
 }
 

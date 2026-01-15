@@ -11,10 +11,13 @@ Chart.register(...registerables);
 export interface MetricData {
   title: string;
   value: number | string;
+  targetValue: number;
   icon: string;
   iconBg: 'primary' | 'warning' | 'danger' | 'info' | 'success';
   trend?: string;
   trendUp?: boolean;
+  prefix?: string;
+  suffix?: string;
 }
 
 @Component({
@@ -29,6 +32,7 @@ export class DashbordComponent implements OnInit, AfterViewInit {
   @ViewChild('workloadChart') workloadChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('lossTypeChart') lossTypeChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('impactChart') impactChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('radarChart') radarChartRef!: ElementRef<HTMLCanvasElement>;
 
   @Output() newClaimClick = new EventEmitter<void>();
 
@@ -37,6 +41,7 @@ export class DashbordComponent implements OnInit, AfterViewInit {
   handlerWorkloadChart: Chart | null = null;
   lossTypeChart: Chart | null = null;
   impactChart: Chart | null = null;
+  radarChart: Chart | null = null;
 
   // Chart data
   newClaimsCount = 0;
@@ -44,6 +49,10 @@ export class DashbordComponent implements OnInit, AfterViewInit {
   handlerWorkload: { name: string; count: number }[] = [];
   claimsByLossType: { type: string; count: number }[] = [];
   impactByLossType: { type: string; amount: number }[] = [];
+
+  // Pipeline data
+  claimsPipeline: { status: string; count: number; icon: string; color: string; percentage: number }[] = [];
+  totalClaimsInPipeline = 0;
 
   private policies: Policy[] = [];
   private claims: Claim[] = [];
@@ -55,6 +64,8 @@ export class DashbordComponent implements OnInit, AfterViewInit {
     this.loadData();
     this.buildMetrics();
     this.calculateChartData();
+    this.animateMetrics();
+    this.animatePipeline();
   }
 
   ngAfterViewInit(): void {
@@ -63,6 +74,7 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       this.initWorkloadChart();
       this.initLossTypeChart();
       this.initImpactChart();
+      this.initRadarChart();
     }, 0);
   }
 
@@ -89,7 +101,8 @@ export class DashbordComponent implements OnInit, AfterViewInit {
     this.metrics = [
       {
         title: 'Active Policies',
-        value: activePolicies,
+        value: 0,
+        targetValue: activePolicies,
         icon: 'pi pi-shield',
         iconBg: 'primary',
         trend: `${totalPolicies} total`,
@@ -97,7 +110,8 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       },
       {
         title: 'Open Claims',
-        value: activeClaims,
+        value: 0,
+        targetValue: activeClaims,
         icon: 'pi pi-copy',
         iconBg: 'warning',
         trend: `${newClaims} new`,
@@ -105,15 +119,18 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       },
       {
         title: 'Total Exposure',
-        value: `£${totalImpact.toLocaleString()}`,
+        value: 0,
+        targetValue: totalImpact,
         icon: 'pi pi-credit-card',
         iconBg: 'danger',
         trend: `Avg £${avgImpact.toLocaleString()}`,
-        trendUp: false
+        trendUp: false,
+        prefix: '£'
       },
       {
         title: 'Pending Documents',
-        value: pendingDocs,
+        value: 0,
+        targetValue: pendingDocs,
         icon: 'pi pi-clock',
         iconBg: 'info',
         trend: 'Awaiting',
@@ -121,7 +138,8 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       },
       {
         title: 'Active Handlers',
-        value: activeHandlers,
+        value: 0,
+        targetValue: activeHandlers,
         icon: 'pi pi-users',
         iconBg: 'success',
         trend: 'Available',
@@ -134,9 +152,19 @@ export class DashbordComponent implements OnInit, AfterViewInit {
     const newClaims = this.claims.filter(c => c.status === 'New').length;
     const inReviewClaims = this.claims.filter(c => c.status === 'In Review').length;
     const referredClaims = this.claims.filter(c => c.status === 'Referred').length;
+    const resolvedClaims = this.claims.filter(c => c.status === 'Resolved').length;
 
     this.newClaimsCount = newClaims;
     this.openClaimsCount = inReviewClaims + referredClaims;
+
+    // Calculate pipeline data
+    this.totalClaimsInPipeline = this.claims.length;
+    this.claimsPipeline = [
+      { status: 'New', count: newClaims, icon: 'pi pi-inbox', color: '#3b82f6', percentage: this.totalClaimsInPipeline > 0 ? (newClaims / this.totalClaimsInPipeline) * 100 : 0 },
+      { status: 'In Review', count: inReviewClaims, icon: 'pi pi-search', color: '#f59e0b', percentage: this.totalClaimsInPipeline > 0 ? (inReviewClaims / this.totalClaimsInPipeline) * 100 : 0 },
+      { status: 'Referred', count: referredClaims, icon: 'pi pi-exclamation-triangle', color: '#ef4444', percentage: this.totalClaimsInPipeline > 0 ? (referredClaims / this.totalClaimsInPipeline) * 100 : 0 },
+      { status: 'Resolved', count: resolvedClaims, icon: 'pi pi-check-circle', color: '#10b981', percentage: this.totalClaimsInPipeline > 0 ? (resolvedClaims / this.totalClaimsInPipeline) * 100 : 0 }
+    ];
 
     // Calculate handler workload
     this.handlerWorkload = this.handlers.map(handler => ({
@@ -256,6 +284,72 @@ export class DashbordComponent implements OnInit, AfterViewInit {
     this.newClaimClick.emit();
   }
 
+  private animateMetrics(): void {
+    const duration = 1500;
+    const steps = 60;
+    const interval = duration / steps;
+
+    this.metrics.forEach((metric, index) => {
+      const target = metric.targetValue;
+      const increment = target / steps;
+      let current = 0;
+      let step = 0;
+
+      const timer = setInterval(() => {
+        step++;
+        current = Math.min(current + increment, target);
+
+        if (metric.prefix === '£') {
+          metric.value = `£${Math.round(current).toLocaleString()}`;
+        } else {
+          metric.value = Math.round(current);
+        }
+
+        if (step >= steps) {
+          clearInterval(timer);
+          if (metric.prefix === '£') {
+            metric.value = `£${target.toLocaleString()}`;
+          } else {
+            metric.value = target;
+          }
+        }
+      }, interval + (index * 50));
+    });
+  }
+
+  private animatePipeline(): void {
+    const duration = 1200;
+    const steps = 40;
+    const interval = duration / steps;
+
+    const targetCounts = this.claimsPipeline.map(s => s.count);
+    const targetPercentages = this.claimsPipeline.map(s => s.percentage);
+
+    this.claimsPipeline.forEach((stage, index) => {
+      stage.count = 0;
+      stage.percentage = 0;
+    });
+
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      const progress = step / steps;
+
+      this.claimsPipeline.forEach((stage, index) => {
+        stage.count = Math.round(targetCounts[index] * progress);
+        stage.percentage = targetPercentages[index] * progress;
+      });
+
+      if (step >= steps) {
+        clearInterval(timer);
+        this.claimsPipeline.forEach((stage, index) => {
+          stage.count = targetCounts[index];
+          stage.percentage = targetPercentages[index];
+        });
+      }
+    }, interval);
+  }
+
   private initLossTypeChart(): void {
     if (!this.lossTypeChartRef) return;
 
@@ -287,6 +381,12 @@ export class DashbordComponent implements OnInit, AfterViewInit {
         responsive: true,
         maintainAspectRatio: false,
         cutout: '60%',
+        animation: {
+          animateRotate: true,
+          animateScale: true,
+          duration: 1200,
+          easing: 'easeOutQuart'
+        },
         plugins: {
           legend: {
             display: false
@@ -335,6 +435,11 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 1500,
+          easing: 'easeOutQuart',
+          delay: (context) => context.dataIndex * 100
+        },
         plugins: {
           legend: {
             display: false
@@ -366,6 +471,93 @@ export class DashbordComponent implements OnInit, AfterViewInit {
               callback: (value) => '£' + (value as number).toLocaleString()
             },
             grid: { color: '#e2e8f0' }
+          }
+        }
+      }
+    });
+  }
+
+  private initRadarChart(): void {
+    if (!this.radarChartRef) return;
+
+    const ctx = this.radarChartRef.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    if (this.radarChart) {
+      this.radarChart.destroy();
+    }
+
+    // Calculate metrics for radar chart
+    const totalClaims = this.claims.length;
+    const highRiskClaims = this.claims.filter(c => c.riskFlags.length >= 2).length;
+    const docsReceived = this.claims.reduce((sum, c) => sum + c.documents.filter(d => d.received).length, 0);
+    const totalDocs = this.claims.reduce((sum, c) => sum + c.documents.length, 0);
+    const avgImpact = totalClaims > 0 ? this.claims.reduce((sum, c) => sum + c.estimatedImpactGBP, 0) / totalClaims : 0;
+    const assignedClaims = this.claims.filter(c => c.assignedTo !== null).length;
+
+    // Normalize values to 0-100 scale
+    const metrics = [
+      Math.min((assignedClaims / Math.max(totalClaims, 1)) * 100, 100), // Assignment Rate
+      Math.min((docsReceived / Math.max(totalDocs, 1)) * 100, 100), // Doc Completion
+      Math.min(100 - (highRiskClaims / Math.max(totalClaims, 1)) * 100, 100), // Risk Score (inverted)
+      Math.min((avgImpact / 10000) * 100, 100), // Impact Level
+      Math.min((this.handlers.length / 5) * 100, 100) // Handler Capacity
+    ];
+
+    this.radarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Assignment', 'Documents', 'Risk Score', 'Impact', 'Capacity'],
+        datasets: [{
+          label: 'Current Status',
+          data: metrics,
+          backgroundColor: 'rgba(99, 102, 241, 0.2)',
+          borderColor: '#6366f1',
+          borderWidth: 2,
+          pointBackgroundColor: '#6366f1',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#6366f1',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1500,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1e293b',
+            titleFont: { size: 11, family: 'Inter, sans-serif' },
+            bodyFont: { size: 10, family: 'Inter, sans-serif' },
+            padding: 8,
+            cornerRadius: 6,
+            callbacks: {
+              label: (context) => ` ${Math.round(context.raw as number)}%`
+            }
+          }
+        },
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              stepSize: 25,
+              font: { size: 9 },
+              color: '#94a3b8',
+              backdropColor: 'transparent'
+            },
+            grid: { color: '#e2e8f0' },
+            angleLines: { color: '#e2e8f0' },
+            pointLabels: {
+              font: { size: 10, family: 'Inter, sans-serif', weight: 500 },
+              color: '#475569'
+            }
           }
         }
       }

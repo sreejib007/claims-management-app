@@ -1,164 +1,218 @@
 <div class="container-fluid">
-  <!-- Main Card Container -->
-  <div class="handler-list-card">
-    <!-- Card Header -->
-    <div class="card-header-section">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div class="d-flex align-items-center gap-2">
-          <div class="header-icon">
-            <i class="pi pi-users"></i>
-          </div>
-          <div>
-            <h2 class="mb-0">Handlers</h2>
-            <small class="text-muted">{{ filteredHandlers.length }} of {{ handlers.length }} handlers</small>
+  <div class="row g-3">
+    <!-- Left Column: Handlers List -->
+    <div class="col-12 col-lg-7">
+      <div class="handler-list-card">
+        <!-- Card Header -->
+        <div class="card-header-section">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-2">
+              <div class="header-icon">
+                <i class="pi pi-users"></i>
+              </div>
+              <div>
+                <h2 class="mb-0">Handlers</h2>
+                <small class="text-muted">{{ filteredHandlers.length }} of {{ handlers.length }} handlers</small>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <!-- Search -->
+              <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input
+                  type="text"
+                  pInputText
+                  [(ngModel)]="searchTerm"
+                  (input)="onSearch()"
+                  placeholder="Search handlers..."
+                  class="search-input" />
+              </p-iconfield>
+
+              <!-- View Toggle -->
+              <p-selectbutton
+                [options]="viewOptions"
+                [(ngModel)]="viewMode"
+                optionLabel="label"
+                optionValue="value">
+                <ng-template pTemplate="item" let-item>
+                  <i [class]="item.icon" class="me-2"></i>
+                  <span>{{ item.label }}</span>
+                </ng-template>
+              </p-selectbutton>
+            </div>
           </div>
         </div>
 
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-          <!-- Search -->
-          <p-iconfield>
-            <p-inputicon styleClass="pi pi-search" />
-            <input
-              type="text"
-              pInputText
-              [(ngModel)]="searchTerm"
-              (input)="onSearch()"
-              placeholder="Search handlers..."
-              class="search-input" />
-          </p-iconfield>
+        <!-- Table View -->
+        <div *ngIf="viewMode === 'table'" class="table-container">
+          <p-table
+            [value]="filteredHandlers"
+            [paginator]="true"
+            [rows]="8"
+            [rowsPerPageOptions]="[5, 8, 15]"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} handlers"
+            [tableStyle]="{ 'min-width': '100%' }"
+            styleClass="p-datatable-sm p-datatable-striped">
 
-          <!-- View Toggle -->
-          <p-selectbutton
-            [options]="viewOptions"
-            [(ngModel)]="viewMode"
-            optionLabel="label"
-            optionValue="value">
-            <ng-template pTemplate="item" let-item>
-              <i [class]="item.icon" class="me-2"></i>
-              <span>{{ item.label }}</span>
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+                <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
+                <th pSortableColumn="team">Team <p-sortIcon field="team" /></th>
+                <th>Workload</th>
+              </tr>
             </ng-template>
-          </p-selectbutton>
+
+            <ng-template pTemplate="body" let-handler>
+              <tr class="clickable-row" (click)="openHandlerDetail(handler)">
+                <td>
+                  <span class="handler-id">{{ handler.id }}</span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="handler-avatar-sm">
+                      {{ getHandlerInitials(handler.name) }}
+                    </div>
+                    <span class="fw-semibold">{{ handler.name }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="team-badge" [ngClass]="handler.team.toLowerCase()">
+                    <i [class]="getTeamIcon(handler.team)" class="me-1"></i>
+                    {{ handler.team }}
+                  </span>
+                </td>
+                <td>
+                  <p-tag
+                    [value]="getWorkloadCount(handler.name) + ' claims'"
+                    [severity]="getWorkloadSeverity(getWorkloadCount(handler.name))" />
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4" class="text-center py-4">
+                  <i class="pi pi-inbox text-muted" style="font-size: 2rem;"></i>
+                  <p class="text-muted mt-2 mb-0">No handlers found</p>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
         </div>
-      </div>
-    </div>
 
-    <!-- Table View -->
-    <div *ngIf="viewMode === 'table'" class="table-container">
-      <p-table
-        [value]="filteredHandlers"
-        [paginator]="true"
-        [rows]="10"
-        [rowsPerPageOptions]="[5, 10, 25]"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} handlers"
-        [tableStyle]="{ 'min-width': '100%' }"
-        styleClass="p-datatable-sm p-datatable-striped">
-
-        <ng-template pTemplate="header">
-          <tr>
-            <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
-            <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
-            <th pSortableColumn="team">Team <p-sortIcon field="team" /></th>
-            <th>Workload</th>
-          </tr>
-        </ng-template>
-
-        <ng-template pTemplate="body" let-handler>
-          <tr class="clickable-row" (click)="openHandlerDetail(handler)">
-            <td>
-              <span class="handler-id">{{ handler.id }}</span>
-            </td>
-            <td>
-              <div class="d-flex align-items-center gap-2">
-                <div class="handler-avatar-sm">
-                  {{ getHandlerInitials(handler.name) }}
+        <!-- Card View -->
+        <div *ngIf="viewMode === 'cards'" class="cards-container">
+          <div class="row g-3">
+            <div *ngFor="let handler of filteredHandlers" class="col-12 col-xl-6">
+              <div class="handler-card clickable-card" [ngClass]="handler.team.toLowerCase()" (click)="openHandlerDetail(handler)">
+                <!-- Card Header -->
+                <div class="handler-card-header">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="handler-avatar" [ngClass]="handler.team.toLowerCase()">
+                      {{ getHandlerInitials(handler.name) }}
+                    </div>
+                    <div>
+                      <div class="handler-name">{{ handler.name }}</div>
+                      <div class="handler-id-label">{{ handler.id }}</div>
+                    </div>
+                  </div>
+                  <p-tag [value]="handler.team" [severity]="getTeamSeverity(handler.team)" />
                 </div>
-                <span class="fw-semibold">{{ handler.name }}</span>
-              </div>
-            </td>
-            <td>
-              <span class="team-badge" [ngClass]="handler.team.toLowerCase()">
-                <i [class]="getTeamIcon(handler.team)" class="me-1"></i>
-                {{ handler.team }}
-              </span>
-            </td>
-            <td>
-              <p-tag
-                [value]="getWorkloadCount(handler.name) + ' claims'"
-                [severity]="getWorkloadSeverity(getWorkloadCount(handler.name))" />
-            </td>
-          </tr>
-        </ng-template>
 
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="4" class="text-center py-4">
-              <i class="pi pi-inbox text-muted" style="font-size: 2rem;"></i>
-              <p class="text-muted mt-2 mb-0">No handlers found</p>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
-
-    <!-- Card View -->
-    <div *ngIf="viewMode === 'cards'" class="cards-container">
-      <div class="row g-3">
-        <div *ngFor="let handler of filteredHandlers" class="col-12 col-md-6 col-xl-4">
-          <div class="handler-card clickable-card" [ngClass]="handler.team.toLowerCase()" (click)="openHandlerDetail(handler)">
-            <!-- Card Header -->
-            <div class="handler-card-header">
-              <div class="d-flex align-items-center gap-3">
-                <div class="handler-avatar" [ngClass]="handler.team.toLowerCase()">
-                  {{ getHandlerInitials(handler.name) }}
+                <!-- Team Info -->
+                <div class="handler-card-team">
+                  <div class="team-detail">
+                    <i [class]="getTeamIcon(handler.team)" class="me-2"></i>
+                    <span>{{ handler.team }} Team</span>
+                  </div>
                 </div>
-                <div>
-                  <div class="handler-name">{{ handler.name }}</div>
-                  <div class="handler-id-label">{{ handler.id }}</div>
-                </div>
-              </div>
-              <p-tag [value]="handler.team" [severity]="getTeamSeverity(handler.team)" />
-            </div>
 
-            <!-- Team Info -->
-            <div class="handler-card-team">
-              <div class="team-detail">
-                <i [class]="getTeamIcon(handler.team)" class="me-2"></i>
-                <span>{{ handler.team }} Team</span>
-              </div>
-            </div>
-
-            <!-- Workload Section -->
-            <div class="handler-card-workload">
-              <div class="workload-label">
-                <i class="pi pi-briefcase me-1"></i>
-                Current Workload
-              </div>
-              <div class="workload-stats">
-                <div class="workload-count" [ngClass]="getWorkloadSeverity(getWorkloadCount(handler.name))">
-                  {{ getWorkloadCount(handler.name) }}
+                <!-- Workload Section -->
+                <div class="handler-card-workload">
+                  <div class="workload-label">
+                    <i class="pi pi-briefcase me-1"></i>
+                    Current Workload
+                  </div>
+                  <div class="workload-stats">
+                    <div class="workload-count" [ngClass]="getWorkloadSeverity(getWorkloadCount(handler.name))">
+                      {{ getWorkloadCount(handler.name) }}
+                    </div>
+                    <div class="workload-text">
+                      {{ getWorkloadCount(handler.name) === 1 ? 'Active Claim' : 'Active Claims' }}
+                    </div>
+                  </div>
                 </div>
-                <div class="workload-text">
-                  {{ getWorkloadCount(handler.name) === 1 ? 'Active Claim' : 'Active Claims' }}
-                </div>
-              </div>
-            </div>
 
-            <!-- Status Indicator -->
-            <div class="handler-card-status">
-              <div class="status-indicator" [ngClass]="getWorkloadCount(handler.name) < 3 ? 'available' : 'busy'">
-                <i [class]="getWorkloadCount(handler.name) < 3 ? 'pi pi-check-circle' : 'pi pi-clock'"></i>
-                <span>{{ getWorkloadCount(handler.name) < 3 ? 'Available' : 'Busy' }}</span>
+                <!-- Status Indicator -->
+                <div class="handler-card-status">
+                  <div class="status-indicator" [ngClass]="getWorkloadCount(handler.name) < 3 ? 'available' : 'busy'">
+                    <i [class]="getWorkloadCount(handler.name) < 3 ? 'pi pi-check-circle' : 'pi pi-clock'"></i>
+                    <span>{{ getWorkloadCount(handler.name) < 3 ? 'Available' : 'Busy' }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- Empty State -->
+          <div *ngIf="filteredHandlers.length === 0" class="empty-state">
+            <i class="pi pi-inbox"></i>
+            <p>No handlers found</p>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Empty State -->
-      <div *ngIf="filteredHandlers.length === 0" class="empty-state">
-        <i class="pi pi-inbox"></i>
-        <p>No handlers found</p>
+    <!-- Right Column: Workload Charts -->
+    <div class="col-12 col-lg-5">
+      <div class="charts-column">
+        <!-- Workload Distribution Chart -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <div class="chart-icon workload">
+                <i class="pi pi-chart-bar"></i>
+              </div>
+              <div>
+                <h6 class="chart-title">Workload Distribution</h6>
+                <span class="chart-subtitle">Claims per Handler</span>
+              </div>
+            </div>
+            <span class="chart-badge">
+              <i class="pi pi-circle-fill pulse-dot"></i>
+              Live
+            </span>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-container-workload">
+              <canvas #workloadChart></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Distribution Chart -->
+        <div class="chart-card mt-3">
+          <div class="chart-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <div class="chart-icon team">
+                <i class="pi pi-users"></i>
+              </div>
+              <div>
+                <h6 class="chart-title">Team Distribution</h6>
+                <span class="chart-subtitle">Handlers by Team</span>
+              </div>
+            </div>
+            <span class="total-badge">{{ handlers.length }} Total</span>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-container-team">
+              <canvas #teamChart></canvas>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -44,7 +44,11 @@ export class FnolDataService {
       { id: 'u1', name: 'Mina Rahman', team: 'FNOL' },
       { id: 'u2', name: 'Jon Wallace', team: 'FNOL' },
       { id: 'u3', name: 'Priya Sen', team: 'Triage' },
-      { id: 'u4', name: 'A. Patel', team: 'SIU' }
+      { id: 'u4', name: 'A. Patel', team: 'SIU' },
+      { id: 'u5', name: 'Sarah Chen', team: 'FNOL' },
+      { id: 'u6', name: 'David Morris', team: 'Triage' },
+      { id: 'u7', name: 'Emma Thompson', team: 'SIU' },
+      { id: 'u8', name: 'Raj Sharma', team: 'FNOL' }
     ],
     policies: [
       {
@@ -168,6 +172,250 @@ export class FnolDataService {
           bedrooms: 4
         },
         policyNotes: ['New policy (<30 days)', 'Previous insurer flagged subsidence area']
+      },
+      {
+        id: 'p5',
+        policyNumber: 'MTR-UK-456789',
+        product: 'Motor',
+        status: 'Active',
+        startDate: '2025-03-15',
+        endDate: '2026-03-14',
+        customer: {
+          customerId: 'c5',
+          name: 'James Mitchell',
+          email: 'j.mitchell@email.example',
+          phone: '+44 20 7946 0505',
+          address: '45 Oxford Street, London, W1D'
+        },
+        riskTier: 'Low',
+        excessGBP: 200,
+        premiumAnnualGBP: 890,
+        coverage: {
+          type: 'Comprehensive',
+          windscreen: true,
+          courtesyCar: true,
+          personalInjury: true
+        },
+        asset: {
+          vehicleReg: 'AB21 CDE',
+          make: 'Honda',
+          model: 'Civic',
+          year: 2022
+        },
+        policyNotes: ['No claims bonus: 5 years', 'Telematics: Yes']
+      },
+      {
+        id: 'p6',
+        policyNumber: 'HOM-UK-334455',
+        product: 'Home',
+        status: 'Active',
+        startDate: '2025-08-01',
+        endDate: '2026-07-31',
+        customer: {
+          customerId: 'c6',
+          name: 'Victoria Gardens Trust',
+          email: 'admin@victoriagardens.example',
+          phone: '+44 20 7946 0606',
+          address: '12 Richmond Hill, Richmond, TW10'
+        },
+        riskTier: 'Standard',
+        excessGBP: 400,
+        premiumAnnualGBP: 1150,
+        coverage: {
+          buildings: true,
+          contents: true,
+          accidentalDamage: true,
+          homeEmergency: true
+        },
+        asset: {
+          propertyType: 'Detached',
+          yearBuilt: 2005,
+          bedrooms: 5
+        },
+        policyNotes: ['High value contents', 'Alarm system installed']
+      },
+      {
+        id: 'p7',
+        policyNumber: 'MTR-UK-667788',
+        product: 'Motor',
+        status: 'Active',
+        startDate: '2025-11-10',
+        endDate: '2026-11-09',
+        customer: {
+          customerId: 'c7',
+          name: 'Manchester Logistics Ltd',
+          email: 'fleet@manchesterlogistics.example',
+          phone: '+44 161 234 5678',
+          address: '88 Deansgate, Manchester, M3'
+        },
+        riskTier: 'Standard',
+        excessGBP: 350,
+        premiumAnnualGBP: 1450,
+        coverage: {
+          type: 'Comprehensive',
+          windscreen: true,
+          courtesyCar: false,
+          personalInjury: true
+        },
+        asset: {
+          vehicleReg: 'MN22 XYZ',
+          make: 'Ford',
+          model: 'Transit',
+          year: 2022
+        },
+        policyNotes: ['Commercial vehicle', 'Named drivers: 4']
+      },
+      {
+        id: 'p8',
+        policyNumber: 'HOM-UK-998877',
+        product: 'Home',
+        status: 'Active',
+        startDate: '2025-05-20',
+        endDate: '2026-05-19',
+        customer: {
+          customerId: 'c8',
+          name: 'Eleanor Wright',
+          email: 'e.wright@email.example',
+          phone: '+44 117 987 6543',
+          address: '23 Clifton Down, Bristol, BS8'
+        },
+        riskTier: 'Low',
+        excessGBP: 250,
+        premiumAnnualGBP: 720,
+        coverage: {
+          buildings: true,
+          contents: true,
+          accidentalDamage: false,
+          homeEmergency: true
+        },
+        asset: {
+          propertyType: 'Flat',
+          yearBuilt: 2015,
+          bedrooms: 2
+        },
+        policyNotes: ['Ground floor flat', 'Security: entry phone system']
+      },
+      {
+        id: 'p9',
+        policyNumber: 'MTR-UK-112233',
+        product: 'Motor',
+        status: 'Active',
+        startDate: '2025-09-01',
+        endDate: '2026-08-31',
+        customer: {
+          customerId: 'c9',
+          name: 'Birmingham Tech Solutions',
+          email: 'operations@birminghamtech.example',
+          phone: '+44 121 456 7890',
+          address: '55 Colmore Row, Birmingham, B3'
+        },
+        riskTier: 'Standard',
+        excessGBP: 300,
+        premiumAnnualGBP: 1320,
+        coverage: {
+          type: 'Comprehensive',
+          windscreen: true,
+          courtesyCar: true,
+          personalInjury: true
+        },
+        asset: {
+          vehicleReg: 'BH20 TEC',
+          make: 'Tesla',
+          model: 'Model 3',
+          year: 2023
+        },
+        policyNotes: ['Electric vehicle', 'Charging equipment covered']
+      },
+      {
+        id: 'p10',
+        policyNumber: 'HOM-UK-445566',
+        product: 'Home',
+        status: 'Active',
+        startDate: '2025-07-15',
+        endDate: '2026-07-14',
+        customer: {
+          customerId: 'c10',
+          name: 'Scottish Heritage Properties',
+          email: 'claims@scottishheritage.example',
+          phone: '+44 131 555 1234',
+          address: '8 Royal Mile, Edinburgh, EH1'
+        },
+        riskTier: 'High',
+        excessGBP: 750,
+        premiumAnnualGBP: 2100,
+        coverage: {
+          buildings: true,
+          contents: true,
+          accidentalDamage: true,
+          homeEmergency: true
+        },
+        asset: {
+          propertyType: 'Listed Building',
+          yearBuilt: 1780,
+          bedrooms: 6
+        },
+        policyNotes: ['Grade A listed', 'Special restoration clause']
+      },
+      {
+        id: 'p11',
+        policyNumber: 'MTR-UK-778899',
+        product: 'Motor',
+        status: 'Active',
+        startDate: '2025-04-01',
+        endDate: '2026-03-31',
+        customer: {
+          customerId: 'c11',
+          name: 'Leeds Construction Group',
+          email: 'admin@leedsconstruction.example',
+          phone: '+44 113 222 3333',
+          address: '100 Wellington Street, Leeds, LS1'
+        },
+        riskTier: 'Standard',
+        excessGBP: 400,
+        premiumAnnualGBP: 1680,
+        coverage: {
+          type: 'Third Party, Fire & Theft',
+          windscreen: false,
+          courtesyCar: false,
+          personalInjury: true
+        },
+        asset: {
+          vehicleReg: 'LD19 BLD',
+          make: 'Land Rover',
+          model: 'Defender',
+          year: 2020
+        },
+        policyNotes: ['Work vehicle', 'Tools cover: £5000']
+      },
+      {
+        id: 'p12',
+        policyNumber: 'HOM-UK-223344',
+        product: 'Home',
+        status: 'Active',
+        startDate: '2025-02-28',
+        endDate: '2026-02-27',
+        customer: {
+          customerId: 'c12',
+          name: 'Cardiff Bay Investments',
+          email: 'property@cardiffbay.example',
+          phone: '+44 29 2087 4500',
+          address: '1 Mermaid Quay, Cardiff, CF10'
+        },
+        riskTier: 'Standard',
+        excessGBP: 500,
+        premiumAnnualGBP: 1350,
+        coverage: {
+          buildings: true,
+          contents: true,
+          accidentalDamage: true,
+          homeEmergency: true
+        },
+        asset: {
+          propertyType: 'Penthouse',
+          yearBuilt: 2010,
+          bedrooms: 3
+        },
+        policyNotes: ['Waterfront property', 'Flood risk assessed']
       }
     ],
     claims: [
@@ -272,6 +520,364 @@ export class FnolDataService {
         ],
         notes: [],
         createdAt: '2026-01-13T12:12:00Z'
+      },
+      {
+        id: 'cl5',
+        claimNumber: 'CLM-000746',
+        policyId: 'p5',
+        lossType: 'Accident',
+        lossDateTime: '2026-01-08T08:30:00Z',
+        status: 'In Review',
+        assignedTo: 'u2',
+        injury: true,
+        policeReport: true,
+        policeRef: 'MET-CR-118845',
+        incidentDescription: 'Side collision at junction. Driver reports whiplash. Third party at fault.',
+        estimatedImpactGBP: 4500,
+        riskFlags: ['HIGH_IMPACT'],
+        recommendation: 'Request Documents',
+        documents: [
+          { docId: 'd9', name: 'Police report', received: true },
+          { docId: 'd10', name: 'Medical assessment', received: false },
+          { docId: 'd11', name: 'Dashcam footage', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n3',
+            authorId: 'u2',
+            createdAt: '2026-01-10T14:20:00Z',
+            text: 'Third party liability confirmed. Awaiting medical report for injury claim.'
+          }
+        ],
+        createdAt: '2026-01-08T11:45:00Z'
+      },
+      {
+        id: 'cl6',
+        claimNumber: 'CLM-000747',
+        policyId: 'p6',
+        lossType: 'Fire',
+        lossDateTime: '2026-01-07T19:45:00Z',
+        status: 'Referred',
+        assignedTo: 'u7',
+        injury: false,
+        policeReport: true,
+        policeRef: 'MET-FR-445566',
+        incidentDescription: 'Kitchen fire caused by faulty electrical appliance. Fire brigade attended. Significant damage to kitchen and adjoining dining room.',
+        estimatedImpactGBP: 45000,
+        riskFlags: ['HIGH_IMPACT', 'OOH_TIME'],
+        recommendation: 'Refer to SIU',
+        documents: [
+          { docId: 'd12', name: 'Fire brigade report', received: true },
+          { docId: 'd13', name: 'Electrical inspection report', received: false },
+          { docId: 'd14', name: 'Contents inventory', received: false },
+          { docId: 'd15', name: 'Contractor estimates', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n4',
+            authorId: 'u7',
+            createdAt: '2026-01-09T09:00:00Z',
+            text: 'High value claim. Forensic investigation requested to confirm cause.'
+          },
+          {
+            noteId: 'n5',
+            authorId: 'u7',
+            createdAt: '2026-01-11T16:30:00Z',
+            text: 'Preliminary report confirms electrical fault. No fraud indicators.'
+          }
+        ],
+        createdAt: '2026-01-08T08:00:00Z'
+      },
+      {
+        id: 'cl7',
+        claimNumber: 'CLM-000748',
+        policyId: 'p7',
+        lossType: 'Accident',
+        lossDateTime: '2026-01-06T14:20:00Z',
+        status: 'Resolved',
+        assignedTo: 'u5',
+        injury: false,
+        policeReport: false,
+        policeRef: null,
+        incidentDescription: 'Minor scrape in car park. Paint transfer and small dent on passenger door.',
+        estimatedImpactGBP: 850,
+        riskFlags: [],
+        recommendation: 'STP Eligible',
+        documents: [
+          { docId: 'd16', name: 'Photos of damage', received: true },
+          { docId: 'd17', name: 'Repair estimate', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n6',
+            authorId: 'u5',
+            createdAt: '2026-01-07T10:15:00Z',
+            text: 'Low value claim. STP approved. Payment processed.'
+          }
+        ],
+        createdAt: '2026-01-06T16:00:00Z'
+      },
+      {
+        id: 'cl8',
+        claimNumber: 'CLM-000749',
+        policyId: 'p8',
+        lossType: 'Water Damage',
+        lossDateTime: '2026-01-05T02:00:00Z',
+        status: 'In Review',
+        assignedTo: 'u6',
+        injury: false,
+        policeReport: false,
+        policeRef: null,
+        incidentDescription: 'Burst pipe in bathroom during cold snap. Water damage to bathroom and bedroom below.',
+        estimatedImpactGBP: 8500,
+        riskFlags: ['HIGH_IMPACT', 'OOH_TIME'],
+        recommendation: 'Request Documents',
+        documents: [
+          { docId: 'd18', name: 'Emergency plumber invoice', received: true },
+          { docId: 'd19', name: 'Damage photos', received: true },
+          { docId: 'd20', name: 'Restoration company quote', received: false }
+        ],
+        notes: [
+          {
+            noteId: 'n7',
+            authorId: 'u6',
+            createdAt: '2026-01-06T11:00:00Z',
+            text: 'Emergency repairs completed. Awaiting full restoration quote.'
+          }
+        ],
+        createdAt: '2026-01-05T09:30:00Z'
+      },
+      {
+        id: 'cl9',
+        claimNumber: 'CLM-000750',
+        policyId: 'p9',
+        lossType: 'Theft',
+        lossDateTime: '2026-01-04T23:00:00Z',
+        status: 'New',
+        assignedTo: 'u8',
+        injury: false,
+        policeReport: true,
+        policeRef: 'WMP-CR-998877',
+        incidentDescription: 'Catalytic converter stolen from parked vehicle overnight. Vehicle undriveable.',
+        estimatedImpactGBP: 3200,
+        riskFlags: ['OOH_TIME'],
+        recommendation: 'Request Documents',
+        documents: [
+          { docId: 'd21', name: 'Police crime reference', received: true },
+          { docId: 'd22', name: 'CCTV footage request', received: false },
+          { docId: 'd23', name: 'Repair quote', received: false }
+        ],
+        notes: [],
+        createdAt: '2026-01-05T08:15:00Z'
+      },
+      {
+        id: 'cl10',
+        claimNumber: 'CLM-000751',
+        policyId: 'p10',
+        lossType: 'Storm',
+        lossDateTime: '2026-01-03T16:30:00Z',
+        status: 'In Review',
+        assignedTo: 'u3',
+        injury: false,
+        policeReport: false,
+        policeRef: null,
+        incidentDescription: 'Historic chimney stack damaged by high winds. Debris fell onto conservatory roof.',
+        estimatedImpactGBP: 28000,
+        riskFlags: ['HIGH_IMPACT'],
+        recommendation: 'Refer to Underwriting',
+        documents: [
+          { docId: 'd24', name: 'Structural engineer report', received: true },
+          { docId: 'd25', name: 'Conservation officer approval', received: false },
+          { docId: 'd26', name: 'Specialist contractor quotes', received: true },
+          { docId: 'd27', name: 'Weather report', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n8',
+            authorId: 'u3',
+            createdAt: '2026-01-05T14:00:00Z',
+            text: 'Listed building - requires heritage specialist. Awaiting conservation approval.'
+          }
+        ],
+        createdAt: '2026-01-04T10:00:00Z'
+      },
+      {
+        id: 'cl11',
+        claimNumber: 'CLM-000752',
+        policyId: 'p11',
+        lossType: 'Accident',
+        lossDateTime: '2026-01-02T11:15:00Z',
+        status: 'Resolved',
+        assignedTo: 'u1',
+        injury: false,
+        policeReport: false,
+        policeRef: null,
+        incidentDescription: 'Reversing accident on construction site. Damage to rear bumper and tailgate.',
+        estimatedImpactGBP: 2100,
+        riskFlags: [],
+        recommendation: 'STP Eligible',
+        documents: [
+          { docId: 'd28', name: 'Incident report', received: true },
+          { docId: 'd29', name: 'Photos', received: true },
+          { docId: 'd30', name: 'Repair invoice', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n9',
+            authorId: 'u1',
+            createdAt: '2026-01-03T09:30:00Z',
+            text: 'Straightforward claim. Approved and paid.'
+          }
+        ],
+        createdAt: '2026-01-02T14:00:00Z'
+      },
+      {
+        id: 'cl12',
+        claimNumber: 'CLM-000753',
+        policyId: 'p12',
+        lossType: 'Water Damage',
+        lossDateTime: '2026-01-01T06:00:00Z',
+        status: 'Resolved',
+        assignedTo: 'u6',
+        injury: false,
+        policeReport: false,
+        policeRef: null,
+        incidentDescription: 'New Year flooding from flat above. Water ingress through ceiling affecting living room.',
+        estimatedImpactGBP: 5600,
+        riskFlags: ['OOH_TIME'],
+        recommendation: 'Request Documents',
+        documents: [
+          { docId: 'd31', name: 'Building management report', received: true },
+          { docId: 'd32', name: 'Contents damage list', received: true },
+          { docId: 'd33', name: 'Restoration invoice', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n10',
+            authorId: 'u6',
+            createdAt: '2026-01-02T11:00:00Z',
+            text: 'Subrogation opportunity against upstairs neighbour insurance.'
+          },
+          {
+            noteId: 'n11',
+            authorId: 'u6',
+            createdAt: '2026-01-08T16:00:00Z',
+            text: 'Claim settled. Subrogation in progress.'
+          }
+        ],
+        createdAt: '2026-01-01T10:30:00Z'
+      },
+      {
+        id: 'cl13',
+        claimNumber: 'CLM-000754',
+        policyId: 'p5',
+        lossType: 'Theft',
+        lossDateTime: '2025-12-28T20:00:00Z',
+        status: 'Resolved',
+        assignedTo: 'u4',
+        injury: false,
+        policeReport: true,
+        policeRef: 'MET-CR-117700',
+        incidentDescription: 'Theft of personal items from vehicle. Window smashed in shopping centre car park.',
+        estimatedImpactGBP: 1800,
+        riskFlags: ['OOH_TIME'],
+        recommendation: 'STP Eligible',
+        documents: [
+          { docId: 'd34', name: 'Police report', received: true },
+          { docId: 'd35', name: 'Window repair invoice', received: true },
+          { docId: 'd36', name: 'Contents claim form', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n12',
+            authorId: 'u4',
+            createdAt: '2025-12-30T10:00:00Z',
+            text: 'Low value theft. No fraud indicators. Approved.'
+          }
+        ],
+        createdAt: '2025-12-29T09:00:00Z'
+      },
+      {
+        id: 'cl14',
+        claimNumber: 'CLM-000755',
+        policyId: 'p6',
+        lossType: 'Storm',
+        lossDateTime: '2025-12-25T14:00:00Z',
+        status: 'Resolved',
+        assignedTo: 'u2',
+        injury: false,
+        policeReport: false,
+        policeRef: null,
+        incidentDescription: 'Christmas Day storm. Garden fence blown down and garden furniture damaged.',
+        estimatedImpactGBP: 2400,
+        riskFlags: [],
+        recommendation: 'STP Eligible',
+        documents: [
+          { docId: 'd37', name: 'Weather report', received: true },
+          { docId: 'd38', name: 'Damage photos', received: true },
+          { docId: 'd39', name: 'Replacement quotes', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n13',
+            authorId: 'u2',
+            createdAt: '2025-12-27T11:30:00Z',
+            text: 'Storm damage confirmed by Met Office data. Claim approved.'
+          }
+        ],
+        createdAt: '2025-12-26T09:00:00Z'
+      },
+      {
+        id: 'cl15',
+        claimNumber: 'CLM-000756',
+        policyId: 'p9',
+        lossType: 'Accident',
+        lossDateTime: '2026-01-13T07:45:00Z',
+        status: 'New',
+        assignedTo: null,
+        injury: false,
+        policeReport: false,
+        policeRef: null,
+        incidentDescription: 'Hit pothole on M6, causing tyre blowout and alloy wheel damage.',
+        estimatedImpactGBP: 980,
+        riskFlags: ['RECENT_LOSS'],
+        recommendation: 'STP Eligible',
+        documents: [
+          { docId: 'd40', name: 'Photos of pothole', received: false },
+          { docId: 'd41', name: 'Tyre/wheel damage photos', received: false }
+        ],
+        notes: [],
+        createdAt: '2026-01-13T10:00:00Z'
+      },
+      {
+        id: 'cl16',
+        claimNumber: 'CLM-000757',
+        policyId: 'p10',
+        lossType: 'Fire',
+        lossDateTime: '2025-12-20T21:30:00Z',
+        status: 'Resolved',
+        assignedTo: 'u7',
+        injury: false,
+        policeReport: false,
+        policeRef: null,
+        incidentDescription: 'Small fire in period fireplace. Smoke damage to drawing room. No structural damage.',
+        estimatedImpactGBP: 12000,
+        riskFlags: ['HIGH_IMPACT', 'OOH_TIME'],
+        recommendation: 'Request Documents',
+        documents: [
+          { docId: 'd42', name: 'Fire safety inspection', received: true },
+          { docId: 'd43', name: 'Smoke damage assessment', received: true },
+          { docId: 'd44', name: 'Specialist cleaning quote', received: true }
+        ],
+        notes: [
+          {
+            noteId: 'n14',
+            authorId: 'u7',
+            createdAt: '2025-12-22T14:00:00Z',
+            text: 'Period property requires specialist restoration. Heritage approved.'
+          }
+        ],
+        createdAt: '2025-12-21T08:00:00Z'
       }
     ]
   };
