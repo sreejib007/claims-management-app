@@ -292,6 +292,24 @@
   font-weight: 500;
 }
 
+.chart-period-danger {
+  font-size: 0.75rem;
+  color: #dc2626;
+  padding: 0.375rem 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.chart-badge-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.badge-dot-warning {
+  background: #f59e0b;
+}
+
 .chart-card-body {
   padding: 0.875rem 1rem;
 }

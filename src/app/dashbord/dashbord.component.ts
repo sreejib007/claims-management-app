@@ -27,17 +27,23 @@ export interface MetricData {
 export class DashbordComponent implements OnInit, AfterViewInit {
   @ViewChild('claimsDonutChart') claimsDonutChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('workloadChart') workloadChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('lossTypeChart') lossTypeChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('impactChart') impactChartRef!: ElementRef<HTMLCanvasElement>;
 
   @Output() newClaimClick = new EventEmitter<void>();
 
   metrics: MetricData[] = [];
   claimsChart: Chart | null = null;
   handlerWorkloadChart: Chart | null = null;
+  lossTypeChart: Chart | null = null;
+  impactChart: Chart | null = null;
 
   // Chart data
   newClaimsCount = 0;
   openClaimsCount = 0;
   handlerWorkload: { name: string; count: number }[] = [];
+  claimsByLossType: { type: string; count: number }[] = [];
+  impactByLossType: { type: string; amount: number }[] = [];
 
   private policies: Policy[] = [];
   private claims: Claim[] = [];
@@ -55,6 +61,8 @@ export class DashbordComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.initClaimsDonutChart();
       this.initWorkloadChart();
+      this.initLossTypeChart();
+      this.initImpactChart();
     }, 0);
   }
 
@@ -135,6 +143,19 @@ export class DashbordComponent implements OnInit, AfterViewInit {
       name: handler.name,
       count: this.claims.filter(c => c.assignedTo === handler.id).length
     }));
+
+    // Calculate claims by loss type
+    const lossTypes = ['Accident', 'Theft', 'Water Damage', 'Fire', 'Storm'];
+    this.claimsByLossType = lossTypes.map(type => ({
+      type,
+      count: this.claims.filter(c => c.lossType === type).length
+    })).filter(item => item.count > 0);
+
+    // Calculate financial impact by loss type
+    this.impactByLossType = lossTypes.map(type => ({
+      type,
+      amount: this.claims.filter(c => c.lossType === type).reduce((sum, c) => sum + c.estimatedImpactGBP, 0)
+    })).filter(item => item.amount > 0);
   }
 
   private initWorkloadChart(): void {
@@ -233,6 +254,122 @@ export class DashbordComponent implements OnInit, AfterViewInit {
 
   onNewClaimClick(): void {
     this.newClaimClick.emit();
+  }
+
+  private initLossTypeChart(): void {
+    if (!this.lossTypeChartRef) return;
+
+    const ctx = this.lossTypeChartRef.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    if (this.lossTypeChart) {
+      this.lossTypeChart.destroy();
+    }
+
+    const labels = this.claimsByLossType.map(item => item.type);
+    const data = this.claimsByLossType.map(item => item.count);
+    const colors = ['#f87171', '#fbbf24', '#60a5fa', '#f472b6', '#a78bfa'];
+    const borderColors = ['#ef4444', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6'];
+
+    this.lossTypeChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: colors.slice(0, data.length),
+          borderColor: borderColors.slice(0, data.length),
+          borderWidth: 2,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#1e293b',
+            titleFont: { size: 12, family: 'Inter, sans-serif' },
+            bodyFont: { size: 11, family: 'Inter, sans-serif' },
+            padding: 10,
+            cornerRadius: 6,
+            callbacks: {
+              label: (context) => ` ${context.raw} claims`
+            }
+          }
+        }
+      }
+    });
+  }
+
+  private initImpactChart(): void {
+    if (!this.impactChartRef) return;
+
+    const ctx = this.impactChartRef.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    if (this.impactChart) {
+      this.impactChart.destroy();
+    }
+
+    const labels = this.impactByLossType.map(item => item.type);
+    const data = this.impactByLossType.map(item => item.amount);
+    const colors = ['#f87171', '#fbbf24', '#60a5fa', '#f472b6', '#a78bfa'];
+
+    this.impactChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Impact (£)',
+          data: data,
+          backgroundColor: colors.slice(0, data.length),
+          borderRadius: 6,
+          barThickness: 24
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#1e293b',
+            titleFont: { size: 12, family: 'Inter, sans-serif' },
+            bodyFont: { size: 11, family: 'Inter, sans-serif' },
+            padding: 10,
+            cornerRadius: 6,
+            callbacks: {
+              label: (context) => ` £${(context.raw as number).toLocaleString()}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              font: { size: 10, family: 'Inter, sans-serif' },
+              color: '#64748b'
+            },
+            grid: { display: false }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              font: { size: 10, family: 'Inter, sans-serif' },
+              color: '#64748b',
+              callback: (value) => '£' + (value as number).toLocaleString()
+            },
+            grid: { color: '#e2e8f0' }
+          }
+        }
+      }
+    });
   }
 
   private initClaimsDonutChart(): void {

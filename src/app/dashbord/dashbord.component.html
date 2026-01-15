@@ -116,5 +116,70 @@
         </div>
       </div>
     </div>
+
+    <!-- Second Row Charts -->
+    <div class="row g-3 mt-1">
+      <!-- Claims by Loss Type -->
+      <div class="col-12 col-lg-6">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <app-icon-box icon="pi pi-tag" size="sm" color="subtle-warning"></app-icon-box>
+              <div>
+                <h6 class="chart-title">Claims by Loss Type</h6>
+                <span class="chart-subtitle">Distribution by Category</span>
+              </div>
+            </div>
+            <div class="chart-badge chart-badge-warning">
+              <span class="badge-dot badge-dot-warning"></span>
+              Analysis
+            </div>
+          </div>
+          <div class="chart-card-body">
+            <div class="row align-items-center">
+              <div class="col-7">
+                <div class="chart-container-donut">
+                  <canvas #lossTypeChart></canvas>
+                </div>
+              </div>
+              <div class="col-5">
+                <div class="chart-legend loss-type-legend">
+                  <div class="legend-item" *ngFor="let item of claimsByLossType; let i = index">
+                    <span class="legend-dot" [ngStyle]="{'background': ['#f87171', '#fbbf24', '#60a5fa', '#f472b6', '#a78bfa'][i]}"></span>
+                    <div class="legend-content">
+                      <span class="legend-value">{{ item.count }}</span>
+                      <span class="legend-label">{{ item.type }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Impact by Loss Type -->
+      <div class="col-12 col-lg-6">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="d-flex align-items-center gap-2">
+              <app-icon-box icon="pi pi-pound" size="sm" color="subtle-danger"></app-icon-box>
+              <div>
+                <h6 class="chart-title">Financial Impact</h6>
+                <span class="chart-subtitle">Estimated £ by Loss Type</span>
+              </div>
+            </div>
+            <div class="chart-actions">
+              <span class="chart-period-danger">High Priority</span>
+            </div>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-container-bar">
+              <canvas #impactChart></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
